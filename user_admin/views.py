@@ -68,3 +68,8 @@ def todo(request):
 def todo2(request):
     all_items = List.objects.all
     return render(request, 'todo.html', {'list_items': all_items})
+
+
+def todo3(request):
+    all_items = List.objects.all
+    return render(request, 'todo.html', {'list_items': all_items})
