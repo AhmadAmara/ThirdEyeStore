@@ -61,15 +61,6 @@ def categories(request):
 def signout(request):
     return render(request, "home.html")
 
-def todo(request):
-    all_items = List.objects.all
-    return render(request, 'todo.html', {'list_items': all_items})
+def forgotten_password(request):
+    return render(request, 'forgotten_password.html')
 
-def todo2(request):
-    all_items = List.objects.all
-    return render(request, 'todo.html', {'list_items': all_items})
-
-
-def todo3(request):
-    all_items = List.objects.all
-    return render(request, 'todo.html', {'list_items': all_items})
