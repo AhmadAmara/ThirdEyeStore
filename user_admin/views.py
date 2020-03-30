@@ -54,9 +54,10 @@ def welcome(request):
     return render(request, "welcome.html",{"username" : "badwelcome"} )
 
 
-def categories(request):
-    return render(request, "categories.html")
 
+def categories(request):
+    all_items = List.objects.all
+    return render(request, "categories.html", {'all_items': all_items})
 
 def signout(request):
     return render(request, "home.html")
