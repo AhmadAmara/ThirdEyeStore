@@ -8,9 +8,9 @@
          
          <div style = "max-width:470px;">
             <center>
-               <label for="uname"><b>Email</b></label> 
+               <label for="uname"><b>Username</b></label> 
                <input type = "text" style = "margin-left:5%;" 
-                  placeholder = "enter your user name" name = "email" />
+                  placeholder = "enter your user name" name = "username" />
             </center>
          </div>
 			
@@ -25,22 +25,20 @@
          <br>
          <div style = "max-width:470px;">
             <center> 
-
+            
                <button style = "border:0px; background-color:#4285F4; margin-top:8%;
                   height:35px; width:80%;margin-left:19%;" type = "submit" 
                   value = "Login" >
                   <strong>Login</strong>
-               </button> 
-
-         <a class="navbar-brand" href="{% url 'signup' %}">Signup</a>
-               
+                  
+               </button>  
                <label>
                <input type="checkbox" checked="checked" name="remember"> Remember me
                </label>
             </center>
          </div>
          <div class="container" style="background-color:#f1f1f1">
-            <span class="psw"><a href = "{%url 'forgotten_password' %}" >Forgot password?</a></span>
+               <span class="psw"><a href="http://127.0.0.1:8000/forgotten_password" >Forgot password?</a></span>
          </div>
       </form>
       <hr/>
