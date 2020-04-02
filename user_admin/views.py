@@ -61,7 +61,7 @@ def categories(request):
 
 def category(request,category_id):
     
-    return render(request, "category.html", {'all_items': category_id})
+    return render(request,"category.html", {'all_items': category_id})
 
 def signout(request):
     return render(request, "home.html")
