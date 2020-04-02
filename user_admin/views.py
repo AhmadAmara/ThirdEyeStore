@@ -7,6 +7,7 @@ from user_admin.form import StudentForm
 from user_admin.form import LoginForm ,SignUpForm 
 from django.shortcuts import redirect
 from .models import List, User
+from .models import Category
 # for redirect
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
@@ -78,10 +79,13 @@ def welcome(request):
 
 
 def categories(request):
-    all_items = List.objects.all
+    all_items = Category.objects.all
     return render(request, "categories.html", {'all_items': all_items})
 
 
+def category(request,category_id):
+    
+    return render(request, "category.html", {'all_items': category_id})
 
 def signout(request):
     return render(request, "home.html")
