@@ -10,6 +10,6 @@ urlpatterns = [
   path('signup/', views.signup, name="signup"),
   path('category/<category_id>', views.category, name="category"),
   path('signout/', views.signout, name="signout"),
-  path('forgotten_password/', views.forgotten_password, name="forgotten_password"),
+  path('forgotten_password/', views.forgotten_password, name="forgotten_password")
 
 ]

@@ -6,15 +6,7 @@ class Category(models.Model):
 
 
     def __str__(self):
-        return self.item + ' | ' + str(self.completed)
-
-class List2(models.Model):
-    item = models.CharField(max_length = 200)
-    completed = models.BooleanField(default=False)
-
-
-    def __str__(self):
-        return self.item + ' | ' + str(self.completed)
+        return self.catName + ' | ' + str(self.isAvtive)
 
 
 class User(models.Model):
@@ -25,4 +17,3 @@ class User(models.Model):
 
     def __str__(self):
         return self.user_name + ' | ' + self.email + '|' +self.password
-        return self.catName + ' | ' + str(self.isAvtive)

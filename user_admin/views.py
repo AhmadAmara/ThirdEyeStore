@@ -6,7 +6,7 @@ from user_admin.functions import handle_uploaded_file
 from user_admin.form import StudentForm  
 from user_admin.form import LoginForm ,SignUpForm 
 from django.shortcuts import redirect
-from .models import List, User
+from .models import User
 from .models import Category
 # for redirect
 from django.shortcuts import redirect

@@ -18,6 +18,8 @@ public/storage
 public/hot
 storage/*.key
 .env
+.env4
+
 Homestead.yaml
 Homestead.json
 /.vagrant
@@ -88,6 +90,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
+.env4.test
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -126,6 +129,8 @@ dist/
 tmp/
 temp/
 env/
+env4/
+
 ca.code-workspace/
 .gitignore/
 ### VisualStudioCode ###
