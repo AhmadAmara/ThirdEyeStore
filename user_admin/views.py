@@ -7,6 +7,8 @@ from user_admin.form import StudentForm
 from user_admin.form import LoginForm ,SignUpForm 
 from django.shortcuts import redirect
 from .models import User
+from .models import UserIn
+
 from .models import Category
 # for redirect
 from django.shortcuts import redirect
