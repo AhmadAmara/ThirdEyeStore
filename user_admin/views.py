@@ -41,12 +41,18 @@ def login(request):
         if MyLoginForm.is_valid():
             email = MyLoginForm.cleaned_data['email']
             password = MyLoginForm.cleaned_data['password']
-            #your code using database
-            if email=='Ahmad':
-              #return redirect('welcome') # just to request first time the page
-              return render(request,'welcome.html',{"email" : email})
+
+            email_value = User.objects.filter(email=email).values()
+
+            if(not email_value):
+                return render(request, "signup.html")
+            
+            elif(email_value[0]['password'] != password):
+                return render(request, 'loggedin.html', {"email" : "bad user name","password":"bad password"})        
+
             else:
-              return render(request, 'loggedin.html', {"email" : email,"password":password})
+                return render(request,'home.html',email_value[0])
+            
         else:
             return render(request, 'loggedin.html', {"email" : "bad user name","password":"bad password"})        
     else:
@@ -61,8 +67,12 @@ def signup(request):
             password = MySignupForm.cleaned_data['password']
             rep_password = MySignupForm.cleaned_data['rep_password']
 
+            email_value = User.objects.filter(email=email).values()
+            
+            if(email_value):
+                return render(request, "signup.html", {'email': email ,'bademail':'bademail', 'message': 'this email already signedup'})
+
             new_user = User()
-            new_user.user_name = "fake_name"
             new_user.email = email
             new_user.password = password
             new_user.save()
@@ -70,7 +80,7 @@ def signup(request):
         else:
             return render(request, "home.html")        
     else:
-        return render(request, "signup.html")
+        return render(request, "signup.html",{})
 
         
 def welcome(request):

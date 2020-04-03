@@ -1,3 +1,7 @@
+{%extends 'base.html'%}
+
+{% block content %}
+
 <form name = "form" 
    action="{% url 'signup' %}"  
     method = "POST" > {%csrf_token%}
@@ -18,9 +22,17 @@
 
     <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
 
+      
     <div class="clearfix">
       <button type="button" class="cancelbtn">Cancel</button>
       <button type="submit" class="signupbtn">Sign Up</button>
     </div>
   </div>
 </form>
+
+{%if 'message'%}
+{{message}}
+{% endif %}
+
+
+{% endblock content %}

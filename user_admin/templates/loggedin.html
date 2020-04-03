@@ -1,3 +1,6 @@
+{%extends 'base.html'%}
+
+{% block content %}
 
 <html>
    <body>
@@ -8,9 +11,9 @@
          
          <div style = "max-width:470px;">
             <center>
-               <label for="uname"><b>Email</b></label> 
+               <label for="uemail"><b>Email</b></label> 
                <input type = "text" style = "margin-left:5%;" 
-                  placeholder = "enter your user name" name = "email" />
+                  placeholder = "enter your email" name = "email" />
             </center>
          </div>
 			
@@ -46,3 +49,4 @@
       <hr/>
 
 
+{% endblock content %}
