@@ -13,8 +13,7 @@ from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 
 def home(request):
-
-    return render(request, "home.html", {})
+    return render(request, 'home.html', {'email':''})
 
 def about(request):
     
@@ -56,7 +55,7 @@ def login(request):
         else:
             return render(request, 'loggedin.html', {"email" : "bad user name","password":"bad password"})        
     else:
-     return render(request, 'loggedin.html', {"email" : "email","password":"nopassword"})
+     return render(request, 'loggedin.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -76,9 +75,9 @@ def signup(request):
             new_user.email = email
             new_user.password = password
             new_user.save()
-            return render(request, "welcome.html")
+            return render(request, "loggedin.html")
         else:
-            return render(request, "home.html")        
+            return render(request, "signup.html",{'message': 'somthing wrong, please fill the form again'})        
     else:
         return render(request, "signup.html",{})
 
