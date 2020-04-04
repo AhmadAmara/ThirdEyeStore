@@ -126,6 +126,7 @@ dist/
 tmp/
 temp/
 env4/
+env/
 .env4/
 ca.code-workspace/
 .gitignore/
