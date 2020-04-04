@@ -3,6 +3,36 @@
 {% block content %}
 
 
-<h1>This is {{all_items}}</h1>
+{% if all_items %}
+<h1>This is {{category_id}}</h1>
 
+
+	<table class="table table-bordered">
+	<tr>
+       <th>Name</th>
+       <th>category</th>
+       <th>price</th>
+       <th> </th>
+
+    </tr>
+		{% for things in all_items %}
+				<tr>
+					<td><center>{{things.Name}}</center></td>
+					<td><center>{{things.Weight}}</center></td>
+					<td><center>{{things.price}}</center></td>
+					<td>
+					<form name="buyform"
+					    action = "{% url 'addorder' things.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                       
+                        <input type="submit" value="Buy" >
+                   </form>
+					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
+					
+				</tr>
+			
+		{% endfor %}
+	</table>
+{% endif %}
 {% endblock content %}

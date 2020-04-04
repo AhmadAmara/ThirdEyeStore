@@ -18,3 +18,6 @@ class SignUpForm(forms.Form):
    rep_password = forms.CharField(widget = forms.PasswordInput())
   
 
+class Order(forms.Form):
+   ProdectID = forms.CharField(label="ProductID",max_length = 100)
+  

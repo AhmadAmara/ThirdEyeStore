@@ -17,3 +17,32 @@ class User(models.Model):
         return  self.email + '|' +self.password
 
 
+class Product(models.Model):
+    category = models.ForeignKey(Category,default=1,on_delete=models.CASCADE)
+    Name= models.CharField(max_length=200,unique=True)
+    Weight = models.FloatField()
+    price = models.FloatField()
+    Quantity = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return self.Name +' | ' +str(self.category) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) +' | ' + str(self.Weight)
+
+
+
+
+class Cart(models.Model):
+    User_em = models.ForeignKey(User,on_delete=models.CASCADE)
+    isCheckout = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.User_em) + ' | ' + str(self.isCheckout)
+
+
+class Order_Line(models.Model):
+    CardId = models.ForeignKey(Cart,default=1,on_delete=models.CASCADE)
+    ProductID = models.ForeignKey(Product,default=1,on_delete=models.CASCADE)
+    price = models.FloatField()
+    Quantity = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return str(self.CardId) +' | ' +str(self.ProductID) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) 

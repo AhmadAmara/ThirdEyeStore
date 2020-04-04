@@ -1,0 +1,28 @@
+
+{%extends 'base.html'%}
+
+{% block content %}
+
+
+<h1>This is Cart</h1>
+
+{% if all_items %}
+	<table class="table table-bordered">
+    			<td><center>Order ID</center></td>
+				<td><center>Product Name</center></td>
+				<td><center>price</center></td>
+				<td><center>Quantity</center></td>
+  
+		{% for things in all_items %}
+				<tr>
+                	<td><center>{{things.id}}</center></td>
+					<td><center>{{things.ProductID.Name}}</center></td>
+					<td><center>{{things.price}}</center></td>
+                    <td><center>{{things.Quantity}}</center></td>
+					
+				</tr>
+			
+		{% endfor %}
+	</table>
+{% endif %}
+{% endblock content %}

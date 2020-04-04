@@ -4,10 +4,9 @@ from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
 from user_admin.form import StudentForm  
-from user_admin.form import LoginForm ,SignUpForm 
+from user_admin.form import LoginForm ,SignUpForm,Order
 from django.shortcuts import redirect
-from .models import User
-from .models import UserIn
+from .models import User,Product,Order_Line,Cart
 
 from .models import Category
 # for redirect
@@ -95,12 +94,42 @@ def categories(request):
 
 
 def category(request,category_id):
-    
-    return render(request, "category.html", {'all_items': category_id})
+    if request.method == 'POST':
+      print("koko")
+      print(request.POST)
+      OrderForm = Order(request.POST)
+      print(OrderForm)
+     # if OrderForm.is_valid():
+     #   productid = OrderForm.cleaned_data['ProdectID']
+     #   print(productid)
+      #return redirect('addcard')
+    Products = Product.objects.filter(category=category_id).values()
+    return render(request, "category.html",{'category_id':category_id,'all_items': Products})
 
 def signout(request):
     return render(request, "home.html")
+def addorder(request,Product_id):
+    new_user = User()
+    new_user.email = "koko@emil.com"
+    new_user.password = "password"
+    new_user.save()
+    product = Product.objects.get(pk=Product_id)
+    cat=product.category.catName
+    
+    new_order=Order_Line()
+    c=Cart()
+    c.User_em=new_user
+    c.save()
+    new_order.CardId=c
+    new_order.ProductID=product
+    new_order.price=product.price
+    new_order.save()
+    return redirect('../category/'+cat)
+    #return render(request,cat+"/category.html")
 
 def forgotten_password(request):
     return render(request, 'forgotten_password.html')
+def cart(request):
+    all_items = Order_Line.objects.all()
+    return render(request, 'cart.html', {'all_items': all_items})
 

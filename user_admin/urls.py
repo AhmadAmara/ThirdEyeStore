@@ -6,9 +6,11 @@ urlpatterns = [
   path('about/', views.about, name="about"),
   path('login/', views.login, name="login"),
   path('welcome/', views.welcome, name="welcome"),
+  path('cart/', views.cart, name="cart"),
   path('categories/', views.categories, name="categories"),
   path('signup/', views.signup, name="signup"),
   path('category/<category_id>', views.category, name="category"),
+  path('addorder/<Product_id>', views.addorder, name="addorder"),
   path('signout/', views.signout, name="signout"),
   path('forgotten_password/', views.forgotten_password, name="forgotten_password")
 
