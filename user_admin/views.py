@@ -63,7 +63,6 @@ def signup(request):
         if MySignupForm.is_valid():
             email = MySignupForm.cleaned_data['email']
             password = MySignupForm.cleaned_data['password']
-            rep_password = MySignupForm.cleaned_data['rep_password']
 
             email_value = User.objects.filter(email=email).values()
             
@@ -74,6 +73,10 @@ def signup(request):
             new_user.email = email
             new_user.password = password
             new_user.save()
+            c=Cart()
+            c.User_em=new_user
+            c.save()
+
             return render(request, "loggedin.html")
         else:
             return render(request, "signup.html",{'message': 'somthing wrong, please fill the form again'})        
@@ -119,10 +122,9 @@ def addorder(request,Product_id):
     cat=product.category.catName
     user = User.objects.get(pk=request.session['email'])
     new_order=Order_Line()
-    c=Cart()
-    c.User_em=user
-    c.save()
-    new_order.CardId=c
+    c=Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+    print(c)
+    new_order.CartId=c
     new_order.ProductID=product
     new_order.price=product.price
     new_order.save()
@@ -136,8 +138,8 @@ def forgotten_password(request):
 def cart(request):
 
     if request.session.get('logged_in'):
-        cartid = Cart.objects.filter(User_em=request.session['email'])
-        ord_lin = map(lambda x : Order_Line.objects.get(CardId=x),cartid)
+        cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+        ord_lin = Order_Line.objects.filter(CartId=cartid)
         return render(request, 'cart.html', {'all_items': ord_lin})
     else:
         return render(request, 'home.html')
