@@ -11,6 +11,7 @@ urlpatterns = [
   path('signup/', views.signup, name="signup"),
   path('category/<category_id>', views.category, name="category"),
   path('addorder/<Product_id>', views.addorder, name="addorder"),
+  path('delol/<ol_id>', views.delol, name="delol"),
   path('signout/', views.signout, name="signout"),
   path('forgotten_password/', views.forgotten_password, name="forgotten_password")
 

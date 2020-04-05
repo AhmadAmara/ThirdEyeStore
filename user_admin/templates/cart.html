@@ -4,27 +4,33 @@
 {% block content %}
 
 
-<h1>This is Cart</h1>
+<h1>Cart</h1>
 
 {% if all_items %}
 	<table class="table table-bordered">
 				<tr style="background:#4285F4;color:#eee;">
-    				<td><center><b>Order ID</b></center></td>
+    				
 					<td><center><b>Product Name</b></center></td>
 					<td><center><b>Price</b></center></td>
 					<td><center><b>Quantity</b></center></td>
+					<td width="10%"/>
+
   				</tr>
 
 		{% for things in all_items %}
 				<tr>
-                	<td><center>{{things.id}}</center></td>
+                	
 					<td><center>{{things.ProductID.Name}}</center></td>
 					<td><center>{{things.price}}</center></td>
                     <td><center>{{things.Quantity}}</center></td>
-					
+					<td><center><i><a href="{% url 'delol' things.id %}">Delete</a></i></center></td>
+
 				</tr>
 		{% endfor %}
-
+				<tr>
+                    <td colspan = "4" ><b><center>total price is : {{total_price}}</center></b></td>
+				</tr>
 	</table>
+	<button type="button" disabled>Buy it now</button>
 {% endif %}
 {% endblock content %}
