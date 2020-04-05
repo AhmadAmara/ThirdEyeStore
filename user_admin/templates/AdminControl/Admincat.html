@@ -1,0 +1,19 @@
+
+{%extends 'base.html'%}
+
+{% block content %}
+
+
+<h1>This is Admin categories</h1>
+
+{% if all_items %}
+	<table class="table table-bordered">
+		{% for things in all_items %}
+				<tr>
+					  <td><center><a class="nav-link" href="{% url 'category' things.catName %}">{{things.catName }}</a></center></td>
+				</tr>
+			
+		{% endfor %}
+	</table>
+{% endif %}
+{% endblock content %}

@@ -12,6 +12,11 @@ urlpatterns = [
   path('category/<category_id>', views.category, name="category"),
   path('addorder/<Product_id>', views.addorder, name="addorder"),
   path('signout/', views.signout, name="signout"),
+  path('ControlPanel/', views.ControlPanel, name="ControlPanel"),
+  path('ControlPanel/Categories/', views.Admincat, name="Admincat"),
+  path('ControlPanel/Products/', views.Adminprod, name="Adminprod"),
+  path('ControlPanel/Users/', views.Adminusers, name="Adminusers"),
+  #path('ControlPanel/Products/<products_ID>', views.adminEditP, name="adminEditP"),
   path('forgotten_password/', views.forgotten_password, name="forgotten_password")
 
 ]

@@ -1,0 +1,57 @@
+{%extends 'base.html'%}
+
+{% block content %}
+
+
+{% if all_items %}
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<h1>This is Admin Product</h1>
+
+
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>Name</th>
+       <th>Weight</th>
+       <th>price</th>
+       <th>Quantity</th>
+       <th></th>
+       <th></th>
+
+    </tr>
+		{% for things in all_items %}
+						
+				<tr>	
+					<td ><center>{{things.Name}}</center></td>
+					<td><center>{{things.Weight}}</center></td>
+					<td><center>{{things.price}}</center></td>
+                    <td><center>{{things.Quantity}}</center></td>
+
+					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
+					
+				</tr>
+			
+		{% endfor %}
+	</table>
+{% endif %}
+{% endblock content %}
+
+<!--
+						<td><form name="editform"
+					   action = "{% url 'adminEditP' things.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<input type="submit" value="Edit" >
+                    </form></td>
+					<td><form name="deleteform"
+					   action = "{% url 'adminDeletP' things.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<input type="submit" value="Delete" >
+                    </form></td>					
+                    
+-->
