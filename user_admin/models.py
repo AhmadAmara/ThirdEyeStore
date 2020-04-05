@@ -40,10 +40,10 @@ class Cart(models.Model):
 
 
 class Order_Line(models.Model):
-    CardId = models.ForeignKey(Cart,default=1,on_delete=models.CASCADE)
+    CartId = models.ForeignKey(Cart,default=1,on_delete=models.CASCADE)
     ProductID = models.ForeignKey(Product,default=1,on_delete=models.CASCADE)
     price = models.FloatField()
     Quantity = models.IntegerField(default=1)
     
     def __str__(self):
-        return str(self.CardId) +' | ' +str(self.ProductID) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) 
+        return str(self.CartId) +' | ' +str(self.ProductID) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) 
