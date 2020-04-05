@@ -11,6 +11,7 @@ class Category(models.Model):
 class User(models.Model):
     email = models.EmailField(primary_key=True, max_length = 200, unique=True)
     password = models.CharField(max_length = 200)
+    typ = models.CharField(max_length = 200,default='customer')
 
 
     def __str__(self):
@@ -42,7 +43,7 @@ class Order_Line(models.Model):
     CardId = models.ForeignKey(Cart,default=1,on_delete=models.CASCADE)
     ProductID = models.ForeignKey(Product,default=1,on_delete=models.CASCADE)
     price = models.FloatField()
-    Quantity = models.IntegerField(default=0)
+    Quantity = models.IntegerField(default=1)
     
     def __str__(self):
         return str(self.CardId) +' | ' +str(self.ProductID) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) 
