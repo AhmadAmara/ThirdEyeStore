@@ -7,21 +7,16 @@ from user_admin.form import StudentForm
 from user_admin.form import LoginForm ,SignUpForm,Order
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
-
 from .models import Category
 # for redirect
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 
 def home(request):
-    return render(request, 'home.html', {'email':''})
+    return render(request, 'home.html')
 
 def about(request):
-    
-    d = {"l":
-         [55, 66, [77, 88], 8	, datetime.now()]
-         }
-    return render(request, "about.html", d)
+    return render(request, "about.html")
 
 def index(request):  
     if request.method == 'POST':  
@@ -43,7 +38,6 @@ def login(request):
             password = MyLoginForm.cleaned_data['password']
 
             email_value = User.objects.filter(email=email).values()
-
             if(not email_value):
                 return render(request, "signup.html")
             
@@ -51,6 +45,10 @@ def login(request):
                 return render(request, 'loggedin.html', {"email" : "bad user name","password":"bad password"})        
 
             else:
+                d=dict(email_value[0])
+                request.session['logged_in'] = True
+                request.session['email']=d['email']
+                request.session['typ']=d['typ']
                 return render(request,'home.html',email_value[0])
             
         else:
@@ -89,16 +87,16 @@ def welcome(request):
 
 
 def categories(request):
-    all_items = Category.objects.all
+    all_items = Category.objects.filter
     return render(request, "categories.html", {'all_items': all_items})
 
 
 def category(request,category_id):
     if request.method == 'POST':
-      print("koko")
-      print(request.POST)
+    #   print("koko")
+    #   print(request.POST)
       OrderForm = Order(request.POST)
-      print(OrderForm)
+    #   print(OrderForm)
      # if OrderForm.is_valid():
      #   productid = OrderForm.cleaned_data['ProdectID']
      #   print(productid)
@@ -107,29 +105,41 @@ def category(request,category_id):
     return render(request, "category.html",{'category_id':category_id,'all_items': Products})
 
 def signout(request):
+    try:
+        del request.session['logged_in']
+        del request.session['email']
+        del request.session['typ']
+    except KeyError:
+        pass
     return render(request, "home.html")
+
 def addorder(request,Product_id):
-    new_user = User()
-    new_user.email = "koko@emil.com"
-    new_user.password = "password"
-    new_user.save()
+
     product = Product.objects.get(pk=Product_id)
     cat=product.category.catName
-    
+    user = User.objects.get(pk=request.session['email'])
     new_order=Order_Line()
     c=Cart()
-    c.User_em=new_user
+    c.User_em=user
     c.save()
     new_order.CardId=c
     new_order.ProductID=product
     new_order.price=product.price
     new_order.save()
+    
     return redirect('../category/'+cat)
     #return render(request,cat+"/category.html")
 
 def forgotten_password(request):
     return render(request, 'forgotten_password.html')
+
 def cart(request):
-    all_items = Order_Line.objects.all()
-    return render(request, 'cart.html', {'all_items': all_items})
+
+    if request.session.get('logged_in'):
+        cartid = Cart.objects.filter(User_em=request.session['email'])
+        ord_lin = map(lambda x : Order_Line.objects.get(CardId=x),cartid)
+        return render(request, 'cart.html', {'all_items': ord_lin})
+    else:
+        return render(request, 'home.html')
+
 

@@ -4,11 +4,17 @@
 
 
 {% if all_items %}
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
 <h1>This is {{category_id}}</h1>
 
 
 	<table class="table table-bordered">
-	<tr>
+	<tr style="background:#4285F4;color:#eee;">
        <th>Name</th>
        <th>category</th>
        <th>price</th>
@@ -16,18 +22,21 @@
 
     </tr>
 		{% for things in all_items %}
-				<tr>
-					<td><center>{{things.Name}}</center></td>
+						
+				<tr>	
+					<td ><center>{{things.Name}}</center></td>
 					<td><center>{{things.Weight}}</center></td>
 					<td><center>{{things.price}}</center></td>
-					<td>
-					<form name="buyform"
-					    action = "{% url 'addorder' things.id %}" 
+					{%if things.Quantity%}
+					<td><form name="buyform"
+					   action = "{% url 'addorder' things.id %}" 
                        method = "POST">
 					   {% csrf_token %}
-                       
-                        <input type="submit" value="Buy" >
-                   </form>
+                	<input type="submit" value="Add to Cart" >
+                    </form></td>
+					
+					{%else%} <td><button type="button" disabled>Currently Unavailable</button></td>
+					{% endif %}
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</tr>
