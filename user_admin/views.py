@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
 from .models import Category
 # for redirect
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 
@@ -117,20 +118,37 @@ def signout(request):
     return render(request, "home.html")
 
 def addorder(request,Product_id):
-
-    product = Product.objects.get(pk=Product_id)
-    cat=product.category.catName
-    user = User.objects.get(pk=request.session['email'])
-    new_order=Order_Line()
-    c=Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-    print(c)
-    new_order.CartId=c
-    new_order.ProductID=product
-    new_order.price=product.price
-    new_order.save()
+    if request.session.get('logged_in'):
+        product = Product.objects.get(pk=Product_id)
+        cat=product.category.catName
+        user = User.objects.get(pk=request.session['email'])
+        c=Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+        ol=Order_Line.objects.filter(CartId=c).filter(ProductID=product)
+        if (ol):
+            ol=Order_Line.objects.filter(CartId=c).get(ProductID=product)
+            ol.Quantity=ol.Quantity+1
+            ol.save()
+        else :
+            new_order=Order_Line()
+            new_order.CartId=c
+            new_order.ProductID=product
+            new_order.price=product.price
+            new_order.save()
     
-    return redirect('../category/'+cat)
-    #return render(request,cat+"/category.html")
+        return redirect('../category/'+cat)
+    else:
+        return render(request, 'loggedin.html')
+
+
+def delol(request,ol_id):
+    if request.session.get('logged_in'):
+        ol = Order_Line.objects.get(pk=ol_id)
+        print(ol)
+        ol.delete()
+        # messages.success(request, ('Item Has Been Deleted!'))
+        return redirect('../cart/')
+    else:
+        return render(request, 'loggedin.html')
 
 def forgotten_password(request):
     return render(request, 'forgotten_password.html')
@@ -140,7 +158,10 @@ def cart(request):
     if request.session.get('logged_in'):
         cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
         ord_lin = Order_Line.objects.filter(CartId=cartid)
-        return render(request, 'cart.html', {'all_items': ord_lin})
+        total_price=0
+        for ol in ord_lin :
+            total_price += ol.Quantity * ol.price
+        return render(request, 'cart.html', {'all_items': ord_lin, 'total_price': total_price})
     else:
         return render(request, 'home.html')
 
