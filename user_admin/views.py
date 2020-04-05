@@ -170,7 +170,13 @@ def cart(request):
 
 ###################################ControlPanel Admin####################
 def ControlPanel(request):
-    return render(request, 'ControlPanel.html')
+    if request.session.get('typ') == 'admin':
+        return render(request, 'ControlPanel.html')
+    else:
+        return redirect('login')
+
+
+
 
 def Admincat(request):
     all_items = Category.objects.all()
