@@ -4,7 +4,7 @@ from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
 from user_admin.form import StudentForm  
-from user_admin.form import LoginForm ,SignUpForm,Order
+from user_admin.form import LoginForm ,SignUpForm
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
 from .models import Category
@@ -12,6 +12,7 @@ from .models import Category
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 def home(request):
     return render(request, 'home.html')
@@ -96,10 +97,10 @@ def categories(request):
 
 
 def category(request,category_id):
-    if request.method == 'POST':
+    #if request.method == 'POST':
     #   print("koko")
     #   print(request.POST)
-      OrderForm = Order(request.POST)
+     # OrderForm = Order(request.POST)
     #   print(OrderForm)
      # if OrderForm.is_valid():
      #   productid = OrderForm.cleaned_data['ProdectID']
@@ -153,6 +154,7 @@ def delol(request,ol_id):
 def forgotten_password(request):
     return render(request, 'forgotten_password.html')
 
+
 def cart(request):
 
     if request.session.get('logged_in'):
@@ -166,3 +168,34 @@ def cart(request):
         return render(request, 'home.html')
 
 
+###################################ControlPanel Admin####################
+def ControlPanel(request):
+    return render(request, 'ControlPanel.html')
+
+def Admincat(request):
+    all_items = Category.objects.all()
+    return render(request, 'AdminControl/Admincat.html', {'all_items': all_items})
+
+def Adminprod(request):
+    all_items=Product.objects.all()
+    return render(request, 'AdminControl/Adminprod.html', {'all_items': all_items})
+
+'''
+def adminEditP(request,products_ID):
+    if request.method == 'POST':
+        product = Product.objects.get(pk=products_ID)
+        form = ProductForm(request.POST or None, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, ('Item Has Been Edited!'))
+            return redirect('..')
+    else:
+        product = Product.objects.get(pk=products_ID)
+        return render(request, 'AdminControl/Admineditprod.html', {'product': product})
+
+
+
+    return render(request, 'AdminControl/Adminprod.html')
+'''
+def Adminusers(request):
+    return render(request, 'AdminControl/Admincat.html')
