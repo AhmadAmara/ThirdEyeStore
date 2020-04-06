@@ -29,7 +29,6 @@ td {
        <th>category</th>
        <th>Is Active</th>
        <th></th>
-       <th></th>
 
     </tr>
 		{% for things in all_items %}
@@ -38,10 +37,10 @@ td {
 					<td ><center>{{things.catName}}</center></td>
                     <td><center>{{things.isAvtive}}</center></td>
 					<td><form name="editform"
-					   action = "{% url 'adminEditcat' things.catName %}"  >
+					   action = "{% url 'adminEditcat' things.id %}"  >
 					   {% csrf_token %}
                 	   <input type="submit" value="Edit" >
-
+					   </form></td>
 
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					

@@ -22,7 +22,6 @@ td {
 	{% endfor%}
 
 {% endif %}
-	{% if Categories %}
 	<form class="form-inline my-2 my-lg-0" method="POST">
       {% csrf_token %}
 	<table class="table table-bordered">
@@ -37,7 +36,7 @@ td {
        <td>
 
        <div>
-             <input type="checkbox" id="isAvtive" name="isAvtive" value="isAvtive">
+             <input type="checkbox" id="isAvtive" name="isAvtive" value="isAvtive" checked>
            <label for="isAvtive"> is Active?</label>
        </div>
 
@@ -49,7 +48,6 @@ td {
           <br>
 
     </form>
-	{% endif %}
    </body>
 </html>
 {% endblock %}

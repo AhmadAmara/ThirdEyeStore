@@ -97,17 +97,9 @@ def categories(request):
 
 
 def category(request,category_id):
-    #if request.method == 'POST':
-    #   print("koko")
-    #   print(request.POST)
-     # OrderForm = Order(request.POST)
-    #   print(OrderForm)
-     # if OrderForm.is_valid():
-     #   productid = OrderForm.cleaned_data['ProdectID']
-     #   print(productid)
-      #return redirect('addcard')
+    categName = Category.objects.get(pk=category_id)
     Products = Product.objects.filter(category=category_id).values()
-    return render(request, "category.html",{'category_id':category_id,'all_items': Products})
+    return render(request, "category.html",{'category':categName.catName,'all_items': Products})
 
 def signout(request):
     try:
@@ -121,22 +113,28 @@ def signout(request):
 def addorder(request,Product_id):
     if request.session.get('logged_in'):
         product = Product.objects.get(pk=Product_id)
-        cat=product.category.catName
+        catId=str(product.category.id)
         user = User.objects.get(pk=request.session['email'])
-        c=Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-        ol=Order_Line.objects.filter(CartId=c).filter(ProductID=product)
+        try:
+           cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+        except :
+            email = request.session['email']
+            cartid=Cart()
+            cartid.User_em=User.objects.get(pk=email)
+            cartid.save()
+        ol=Order_Line.objects.filter(CartId=cartid).filter(ProductID=product)
         if (ol):
-            ol=Order_Line.objects.filter(CartId=c).get(ProductID=product)
+            ol=Order_Line.objects.filter(CartId=cartid).get(ProductID=product)
             ol.Quantity=ol.Quantity+1
             ol.save()
         else :
             new_order=Order_Line()
-            new_order.CartId=c
+            new_order.CartId=cartid
             new_order.ProductID=product
             new_order.price=product.price
             new_order.save()
     
-        return redirect('../category/'+cat)
+        return redirect('../category/'+catId)
     else:
         return render(request, 'loggedin.html')
 
@@ -158,7 +156,15 @@ def forgotten_password(request):
 def cart(request):
 
     if request.session.get('logged_in'):
-        cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+
+        try:
+           cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+        except :
+            email = request.session['email']
+            cartid=Cart()
+            cartid.User_em=User.objects.get(pk=email)
+            cartid.save()
+
         ord_lin = Order_Line.objects.filter(CartId=cartid)
         total_price=0
         for ol in ord_lin :
@@ -178,9 +184,6 @@ def ControlPanel(request):
 
 
 
-def Admincat(request):
-    all_items = Category.objects.all()
-    return render(request, 'AdminControl/Admincat.html', {'all_items': all_items})
 
 def Adminprod(request):
     all_items=Product.objects.all()
@@ -288,34 +291,38 @@ def adminDeletP(request,products_ID):
     messages.success(request, (product.Name+' Has Been Deleted!'))
     return  redirect('..')
 
+
+
+def Admincat(request):
+    all_items = Category.objects.all()
+    return render(request, 'AdminControl/Admincat.html', {'all_items': all_items})
+
+
 def adminEditcat(request,Category_ID):
+    print("Category_ID",Category_ID)
     Categories = Category.objects.values('catName')
     if request.method == 'POST':  
         category = Category.objects.get(pk=Category_ID)
+        catName=category.catName
+        print('category befor',category)
         form = CategoryForm(request.POST or None, instance=category)
         if form.is_valid():
-            catName=form['catName'].value()
-            print('catName',catName)
-            for catN in Categories:
-                print("iam catN['catName'],",catN['catName'])
-                print("iam category.catName,",category.catName)
-                print("iam catName,",catName)
-                if (catN['catName']==catName)and(catName!=category.catName):
-                    messages.success(request, (catName+' this category is exists,try agin'))
-                    return render(request, 'home.html')
+           # catName2=form['catName'].value()
+
             form.save()
-            messages.success(request, (category.catName+' Has Been Edited!'))
-            return redirect('..')
+            print('category after',category)
+            messages.success(request, (catName+' Has Been Edited!'))
+            return  redirect('.')
         else:
-            print(form.errors.as_data())
-            return render(request, 'AdminControl/Admincat.html')
+            #print(form.errors.as_data())
+            messages.success(request, (' this category is exists,try agin'))
+            return redirect('.')
     else:        
         category = Category.objects.get(pk=Category_ID)
         return render(request, 'AdminControl/Admineditcat.html', {'category':category,'Categories':Categories})
 
 
 def adminaddcat(request):
-    print("soso")
     if request.method == 'POST':  
         category = Category()
         form = CategoryForm(request.POST or None, instance=category)
@@ -324,8 +331,9 @@ def adminaddcat(request):
             messages.success(request, (category.catName+' Has Been Added!'))
             return redirect('..')
         else:
-            print(form.errors.as_data())
-            return render(request, 'AdminControl/AdminAddcat.html')
+           # print(form.errors.as_data())
+            messages.success(request, (' this category is exists,try agin'))
+            return redirect('.')
     else:
         
         Categories = Category.objects.values('catName')
