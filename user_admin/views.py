@@ -3,7 +3,7 @@ from datetime import datetime
 from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
-from user_admin.form import StudentForm  
+from user_admin.form import StudentForm,UserForm  
 from user_admin.form import LoginForm ,SignUpForm,ProductForm,CategoryForm
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
@@ -272,10 +272,11 @@ def adminaddP(request):
             messages.success(request, (product.Name+' Has Been Added!'))
             return redirect('..')
         else:
-            product.delete()
+            #product.delete()
             print(form.errors.as_data())
             return redirect('..')
     else:
+        #Categories = Category.objects.values('catName')
         Categories = Category.objects.values('catName')
         return render(request, 'AdminControl/AdminAddprod.html', {'Categories':Categories})
 
@@ -341,4 +342,55 @@ def adminaddcat(request):
 
 
 def Adminusers(request):
-    return render(request, 'AdminControl/Admincat.html')
+    users=User.objects.all()
+    return render(request, 'AdminControl/Adminusers.html',{'users':users})
+
+
+
+def adminEditUser(request,User_ID):
+    user = User.objects.get(email=User_ID)
+    if request.method == 'POST':  
+        form = UserForm(request.POST or None, instance=user)
+        if form.is_valid():
+
+            form.save()
+            messages.success(request, (str(user.email)+' Has Been Edited!'))
+            return  redirect('.')
+        else:
+            #print(form.errors.as_data())
+            messages.success(request, (' this user is exists,try agin'))
+            return redirect('.')
+    else:        
+        return render(request, 'AdminControl/adminEditUser.html', {'user':user})
+
+
+def adminadduser(request):
+   if request.method == 'POST':
+        #Get the posted form
+        MySignupForm = SignUpForm(request.POST)
+        if MySignupForm.is_valid():
+            email = MySignupForm.cleaned_data['email']
+            password = MySignupForm.cleaned_data['password']
+
+
+            email_value = User.objects.filter(email=email).values()
+            
+            if(email_value):
+                messages.success(request, (' this user is exists,try agin'))
+                return redirect('.')
+
+            new_user = User()
+            new_user.email = email
+            new_user.password = password
+            new_user.save()
+            c=Cart()
+            c.User_em=new_user
+            c.save()
+            return redirect('..')
+
+        else:
+            #print(form.errors.as_data())
+            messages.success(request, ('Error,try agin'))
+            return redirect('.')
+   else:        
+        return render(request, 'AdminControl/AdminAdduser.html')

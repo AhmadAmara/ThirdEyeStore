@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Adding User{% endblock %}
+{% block content %}
+<html>
+
+   <body>
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>Adding User page in the administration</h1></center>
+{% if messages %}
+	{% for message in messages %}
+		<div class="alert alert-warning alert-dismissable" role="alert">
+			<button class="close" data-dismiss="alert">
+	            <small><sup>x</sup></small>
+	        </button>
+			{{ message }}
+		</div>
+	{% endfor%}
+
+{% endif %}
+
+<form name = "form" 
+    method = "POST" > {%csrf_token%}
+  <div class="container">
+    <p>Please fill in this form to create an account.</p>
+    <hr>
+    <br>
+    <label for="email"><b>Email</b></label>
+    <input type="email" placeholder="Enter Email" name="email" required>
+    <br>
+    <label for="psw"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+  
+    <br>      
+    <div class="clearfix">
+      <button type="submit" class="signupbtn">Create New User</button>
+    </div>
+  </div>
+</form>
+
+   </body>
+</html>
+{% endblock %}
+
+<!--  <input class="form-control mr-sm-2" type="search" placeholder="{{ product.category.catName }}" 
+      value="{{ product.category.catName }}" aria-label="Search" name="category">
+      -->

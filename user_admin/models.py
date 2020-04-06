@@ -15,7 +15,7 @@ class User(models.Model):
 
 
     def __str__(self):
-        return  self.email + '|' +self.password
+        return  self.email + '|' +self.password+'|'+self.typ
 
 
 class Product(models.Model):

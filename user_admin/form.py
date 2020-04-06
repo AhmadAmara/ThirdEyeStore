@@ -1,6 +1,7 @@
 from django import forms  
 from .models import Product
 from .models import Category
+from .models import User
 
 class StudentForm(forms.Form):  
     firstname = forms.CharField(label="Enter first name",max_length=50)  
@@ -15,13 +16,11 @@ class LoginForm(forms.Form):
 
 
 class SignUpForm(forms.Form):
-   email = forms.CharField(max_length = 100)
+   email =  forms.EmailField(label="Enter Email") 
    password = forms.CharField(widget = forms.PasswordInput())
   
 
-class Order(forms.Form):
-   ProdectID = forms.CharField(label="ProductID",max_length = 100)
-  
+
 class ProductForm(forms.ModelForm):
    class Meta:
       model = Product
@@ -32,3 +31,7 @@ class CategoryForm(forms.ModelForm):
       model = Category
       fields= ["catName", "isAvtive"]
 
+class UserForm(forms.ModelForm):
+   class Meta:
+      model = User
+      fields= ["password", "typ"]
