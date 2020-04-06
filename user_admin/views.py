@@ -4,7 +4,7 @@ from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
 from user_admin.form import StudentForm  
-from user_admin.form import LoginForm ,SignUpForm
+from user_admin.form import LoginForm ,SignUpForm,ProductForm,CategoryForm
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
 from .models import Category
@@ -92,7 +92,7 @@ def welcome(request):
 
 
 def categories(request):
-    all_items = Category.objects.filter
+    all_items = Category.objects.all()
     return render(request, "categories.html", {'all_items': all_items})
 
 
@@ -186,22 +186,151 @@ def Adminprod(request):
     all_items=Product.objects.all()
     return render(request, 'AdminControl/Adminprod.html', {'all_items': all_items})
 
-'''
 def adminEditP(request,products_ID):
-    if request.method == 'POST':
+    if request.method == 'POST':  
         product = Product.objects.get(pk=products_ID)
         form = ProductForm(request.POST or None, instance=product)
         if form.is_valid():
             form.save()
-            messages.success(request, ('Item Has Been Edited!'))
-            return redirect('..')
+            cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+            ord_lin = Order_Line.objects.filter(CartId=cartid)
+            for order in ord_lin :
+                order.price=form['price'].value()
+                order.save()
+            messages.success(request, (product.Name+' Has Been Edited!'))
+            return redirect('.')
+        else:
+            print(form.errors.as_data())
+            return render(request, 'AdminControl/Adminprod.html')
     else:
         product = Product.objects.get(pk=products_ID)
-        return render(request, 'AdminControl/Admineditprod.html', {'product': product})
+        Categories = Category.objects.values('catName')
+        return render(request, 'AdminControl/Admineditprod.html', {'product': product,'Categories':Categories})
 
 
 
-    return render(request, 'AdminControl/Adminprod.html')
-'''
+def adminaddP(request):
+    if request.method == 'POST':
+        product=Product()
+        form = ProductForm(request.POST or None, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, (product.Name+' Has Been Added!'))
+            return redirect('..')
+        else:
+            product.delete()
+            print(form.errors.as_data())
+            return redirect('..')
+    else:
+        Categories = Category.objects.values('catName')
+        return render(request, 'AdminControl/AdminAddprod.html', {'Categories':Categories})
+
+
+def adminDeletP(request,products_ID):
+    product = Product.objects.get(pk=products_ID)
+    product.delete()
+    cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+    ord_lin = Order_Line.objects.filter(CartId=cartid)
+    for order in ord_lin :
+        if order.ProductID.id==products_ID:
+           del order
+    messages.success(request, (product.Name+' Has Been Deleted!'))
+    return  redirect('..')
+
+def adminEditP(request,products_ID):
+    if request.method == 'POST':  
+        product = Product.objects.get(pk=products_ID)
+        form = ProductForm(request.POST or None, instance=product)
+        if form.is_valid():
+            form.save()
+            cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+            ord_lin = Order_Line.objects.filter(CartId=cartid)
+            for order in ord_lin :
+                order.price=form['price'].value()
+                order.save()
+            messages.success(request, (product.Name+' Has Been Edited!'))
+            return redirect('.')
+        else:
+            print(form.errors.as_data())
+            return render(request, 'AdminControl/Adminprod.html')
+    else:
+        product = Product.objects.get(pk=products_ID)
+        Categories = Category.objects.values('catName')
+        return render(request, 'AdminControl/Admineditprod.html', {'product': product,'Categories':Categories})
+
+
+
+def adminaddP(request):
+    if request.method == 'POST':
+        product=Product()
+        form = ProductForm(request.POST or None, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, (product.Name+' Has Been Added!'))
+            return redirect('..')
+        else:
+            product.delete()
+            print(form.errors.as_data())
+            return redirect('..')
+    else:
+        Categories = Category.objects.values('catName')
+        return render(request, 'AdminControl/AdminAddprod.html', {'Categories':Categories})
+
+
+def adminDeletP(request,products_ID):
+    product = Product.objects.get(pk=products_ID)
+    product.delete()
+    cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+    ord_lin = Order_Line.objects.filter(CartId=cartid)
+    for order in ord_lin :
+        if order.ProductID.id==products_ID:
+           del order
+    messages.success(request, (product.Name+' Has Been Deleted!'))
+    return  redirect('..')
+
+def adminEditcat(request,Category_ID):
+    Categories = Category.objects.values('catName')
+    if request.method == 'POST':  
+        category = Category.objects.get(pk=Category_ID)
+        form = CategoryForm(request.POST or None, instance=category)
+        if form.is_valid():
+            catName=form['catName'].value()
+            print('catName',catName)
+            for catN in Categories:
+                print("iam catN['catName'],",catN['catName'])
+                print("iam category.catName,",category.catName)
+                print("iam catName,",catName)
+                if (catN['catName']==catName)and(catName!=category.catName):
+                    messages.success(request, (catName+' this category is exists,try agin'))
+                    return render(request, 'home.html')
+            form.save()
+            messages.success(request, (category.catName+' Has Been Edited!'))
+            return redirect('..')
+        else:
+            print(form.errors.as_data())
+            return render(request, 'AdminControl/Admincat.html')
+    else:        
+        category = Category.objects.get(pk=Category_ID)
+        return render(request, 'AdminControl/Admineditcat.html', {'category':category,'Categories':Categories})
+
+
+def adminaddcat(request):
+    print("soso")
+    if request.method == 'POST':  
+        category = Category()
+        form = CategoryForm(request.POST or None, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, (category.catName+' Has Been Added!'))
+            return redirect('..')
+        else:
+            print(form.errors.as_data())
+            return render(request, 'AdminControl/AdminAddcat.html')
+    else:
+        
+        Categories = Category.objects.values('catName')
+        return render(request, 'AdminControl/AdminAddcat.html', {'Categories':Categories})
+
+
 def Adminusers(request):
     return render(request, 'AdminControl/Admincat.html')

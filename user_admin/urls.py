@@ -15,9 +15,16 @@ urlpatterns = [
   path('signout/', views.signout, name="signout"),
   path('ControlPanel/', views.ControlPanel, name="ControlPanel"),
   path('ControlPanel/Categories/', views.Admincat, name="Admincat"),
+  path('ControlPanel/Categories/<Category_ID>', views.adminEditcat, name="adminEditcat"),
+  path('ControlPanel/Categories/add/', views.adminaddcat, name="adminaddcat"),
   path('ControlPanel/Products/', views.Adminprod, name="Adminprod"),
   path('ControlPanel/Users/', views.Adminusers, name="Adminusers"),
-  #path('ControlPanel/Products/<products_ID>', views.adminEditP, name="adminEditP"),
+  path('ControlPanel/Products/<products_ID>', views.adminEditP, name="adminEditP"),
+  path('ControlPanel/Products/Delet/<products_ID>', views.adminDeletP, name="adminDeletP"),
+  path('ControlPanel/Products/add/', views.adminaddP, name="adminaddP"),
   path('forgotten_password/', views.forgotten_password, name="forgotten_password")
 
 ]
+
+  ##path('ControlPanel/Categories/Delet/<Category_ID>', views.adminDeletcat, name="adminDeletcat"),
+  ###

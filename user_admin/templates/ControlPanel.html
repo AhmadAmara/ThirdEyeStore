@@ -4,8 +4,6 @@
 <html>
    <h1>this is Control Panel page</h1>
    <body>
-   {% if request.session.typ == 'admin'%}
- 
 	    <table class="table table-bordered">
 				<tr><center><a class="nav-link" href="{% url 'Admincat'%}">Categories</a></center></tr>
                 <tr><center><a class="nav-link" href="{% url 'Adminprod'%}">Products</a></center></tr>
@@ -23,15 +21,6 @@
 
 
 
-
-    {%else%}
-       {% if request.session.typ == 'visitor'%}
-           this page for admin you need to sign in
-       {%else%}
-           this page for admin
-        
-        {%endif%}
-    {%endif%}
    </body>
    
 </html>

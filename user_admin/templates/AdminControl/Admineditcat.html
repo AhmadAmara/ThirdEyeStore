@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Edit category{% endblock %}
+{% block content %}
+<html>
+
+   <body>
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>This is Admin Edit category</h1></center>
+
+	{% if category %}
+	<form class="form-inline my-2 my-lg-0" method="POST">
+      {% csrf_token %}
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>category</th>
+       <th>Is Active</th>
+  
+       <tr>
+       <td>
+      <input class="form-control mr-sm-2" type="search" placeholder="{{ category.catName }}" 
+      value="{{ category.catName }}" aria-label="Search" name="catName">
+      </td>
+
+       <td>
+
+      <div>
+           {% if category.isAvtive %}
+            <input type="checkbox" id="isAvtive" name="isAvtive" value="isAvtive" checked>
+            {%else%}
+            <input type="checkbox" id="isAvtive" name="isAvtive" value="isAvtive" >
+            {% endif %}
+          <label for="isAvtive"> is Active?</label>
+       </div>
+
+      </td>
+ 
+    </tr>
+      </table>
+
+      <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Edit category</button>
+      
+      <br>
+    </form>
+	{% endif %}
+   </body>
+</html>
+{% endblock %}
+
+<!--  <input class="form-control mr-sm-2" type="search" placeholder="{{ product.category.catName }}" 
+      value="{{ product.category.catName }}" aria-label="Search" name="category">
+      -->

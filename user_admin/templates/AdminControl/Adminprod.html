@@ -10,12 +10,24 @@ td {
 	text-align: center;
 }
 </style>
-<h1>This is Admin Product</h1>
+<center><h1>This is Admin Product</h1></center>
 
+{% if messages %}
+	{% for message in messages %}
+		<div class="alert alert-warning alert-dismissable" role="alert">
+			<button class="close" data-dismiss="alert">
+	            <small><sup>x</sup></small>
+	        </button>
+			{{ message }}
+		</div>
+	{% endfor%}
+
+{% endif %}
 
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
        <th>Name</th>
+       <th>category</th>
        <th>Weight</th>
        <th>price</th>
        <th>Quantity</th>
@@ -27,31 +39,43 @@ td {
 						
 				<tr>	
 					<td ><center>{{things.Name}}</center></td>
+					<td ><center>{{things.category.catName}}</center></td>
 					<td><center>{{things.Weight}}</center></td>
 					<td><center>{{things.price}}</center></td>
                     <td><center>{{things.Quantity}}</center></td>
+					<td><form name="editform"
+					   action = "{% url 'adminEditP' things.id %}"  >
+					   {% csrf_token %}
+                	   <input type="submit" value="Edit" >
 
+                    </form></td>
+						<td><form name="deleteform"
+					   action = "{% url 'adminDeletP' things.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<input type="submit" value="Delete" >
+                    </form></td>
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</tr>
 			
 		{% endfor %}
 	</table>
+
+	<center><form name="addprod"
+	  action = "{% url 'adminaddP' %}" >
+	  {% csrf_token %}
+      <input type="submit" value="add a Product" >
+      </form></center>
+
 {% endif %}
 {% endblock content %}
 
 <!--
-						<td><form name="editform"
-					   action = "{% url 'adminEditP' things.id %}" 
-                       method = "POST">
-					   {% csrf_token %}
-                	<input type="submit" value="Edit" >
-                    </form></td>
-					<td><form name="deleteform"
+						<td><form name="deleteform"
 					   action = "{% url 'adminDeletP' things.id %}" 
                        method = "POST">
 					   {% csrf_token %}
                 	<input type="submit" value="Delete" >
-                    </form></td>					
-                    
+                    </form></td>	
 -->

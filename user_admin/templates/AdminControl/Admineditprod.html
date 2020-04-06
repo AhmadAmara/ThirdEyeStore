@@ -1,17 +1,68 @@
 {% extends 'base.html' %}
 {% block title %}Edit Product{% endblock %}
 {% block content %}
+<html>
+
+   <body>
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>This is Admin Edit Product</h1></center>
 
 	{% if product %}
 	<form class="form-inline my-2 my-lg-0" method="POST">
       {% csrf_token %}
-      
-      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.item }}" 
-      value="{{ product.item }}" aria-label="Search" name="item">
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>Name</th>
+       <th>category</th>
+       <th>Weight</th>
+       <th>price</th>
+       <th>Quantity</th>
+  
+       <tr>
+	   <td>
+      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.Name }}" 
+      value="{{ product.Name }}" aria-label="Search" name="Name">
+      </td>
+      <td>
+       <select name="category" >
+       <option value={{ product.category.catName }} selected>{{ product.category.catName }}</option>
 
-      <input type="hidden" value="{{ product.completed }}" name="completed">
+       {% for categ in Categories %}
+           {% if not categ.catName == product.category.catName %}
+             <option value={{categ.catName}}>{{categ.catName}}</option>
+           {% endif %}
+       {% endfor %}
+       </select>
+      </td>
+       <td>
+      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.Weight }}" 
+      value="{{ product.Weight }}" aria-label="Search" name="Weight">
+      </td>
+       <td>
+      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.price }}" 
+      value="{{ product.price }}" aria-label="Search" name="price">
+      </td>
+       <td>
+      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.Quantity }}" 
+      value="{{ product.Quantity }}" aria-label="Search" name="Quantity">
+      </td>
+    </tr>
+      </table>
+
       <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Edit product</button>
+      
+      <br>
     </form>
 	{% endif %}
-
+   </body>
+</html>
 {% endblock %}
+
+<!--  <input class="form-control mr-sm-2" type="search" placeholder="{{ product.category.catName }}" 
+      value="{{ product.category.catName }}" aria-label="Search" name="category">
+      -->

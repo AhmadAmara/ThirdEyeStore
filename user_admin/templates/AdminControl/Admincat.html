@@ -1,19 +1,72 @@
-
 {%extends 'base.html'%}
 
 {% block content %}
 
 
-<h1>This is Admin categories</h1>
-
 {% if all_items %}
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>This is Admin Categories</h1></center>
+
+{% if messages %}
+	{% for message in messages %}
+		<div class="alert alert-warning alert-dismissable" role="alert">
+			<button class="close" data-dismiss="alert">
+	            <small><sup>x</sup></small>
+	        </button>
+			{{ message }}
+		</div>
+	{% endfor%}
+
+{% endif %}
+
 	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>category</th>
+       <th>Is Active</th>
+       <th></th>
+       <th></th>
+
+    </tr>
 		{% for things in all_items %}
-				<tr>
-					  <td><center><a class="nav-link" href="{% url 'category' things.catName %}">{{things.catName }}</a></center></td>
+						
+				<tr>	
+					<td ><center>{{things.catName}}</center></td>
+                    <td><center>{{things.isAvtive}}</center></td>
+					<td><form name="editform"
+					   action = "{% url 'adminEditcat' things.catName %}"  >
+					   {% csrf_token %}
+                	   <input type="submit" value="Edit" >
+
+
+					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
+					
 				</tr>
 			
 		{% endfor %}
 	</table>
+	<center><form name="addcat"
+	  action = "{% url 'adminaddcat' %}" >
+	  {% csrf_token %}
+      <input type="submit" value="add a Category" >
+      </form></center>
+
 {% endif %}
 {% endblock content %}
+
+<!--
+
+	                    </form></td>
+						<td><form name="deleteform"
+					   action = "{% url 'adminDeletcat' things.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<input type="submit" value="Delete" >
+                    </form></td>
+
+
+-->

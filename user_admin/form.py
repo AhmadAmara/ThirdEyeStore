@@ -1,5 +1,6 @@
 from django import forms  
 from .models import Product
+from .models import Category
 
 class StudentForm(forms.Form):  
     firstname = forms.CharField(label="Enter first name",max_length=50)  
@@ -21,8 +22,13 @@ class SignUpForm(forms.Form):
 class Order(forms.Form):
    ProdectID = forms.CharField(label="ProductID",max_length = 100)
   
-#class ProductForm(forms.ModelForm):
-    #	class Meta:
-		#model = Product
-	#	fields= ["product", "completed"]
+class ProductForm(forms.ModelForm):
+   class Meta:
+      model = Product
+      fields= ["category", "Name","Weight","price","Quantity"]
+
+class CategoryForm(forms.ModelForm):
+   class Meta:
+      model = Category
+      fields= ["catName", "isAvtive"]
 
