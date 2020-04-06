@@ -267,6 +267,7 @@ def adminaddP(request):
     if request.method == 'POST':
         product=Product()
         form = ProductForm(request.POST or None, instance=product)
+        print("Iam request.POST",request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, (product.Name+' Has Been Added!'))
@@ -277,7 +278,7 @@ def adminaddP(request):
             return redirect('..')
     else:
         #Categories = Category.objects.values('catName')
-        Categories = Category.objects.values('catName')
+        Categories = Category.objects.all()
         return render(request, 'AdminControl/AdminAddprod.html', {'Categories':Categories})
 
 
