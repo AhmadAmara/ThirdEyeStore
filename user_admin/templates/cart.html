@@ -11,6 +11,7 @@
 				<tr style="background:#4285F4;color:#eee;">
     				
 					<td><center><b>Product Name</b></center></td>
+					<td><center><b>Category</b></center></td>
 					<td><center><b>Price</b></center></td>
 					<td><center><b>Quantity</b></center></td>
 					<td width="10%"/>
@@ -21,6 +22,7 @@
 				<tr>
                 	
 					<td><center>{{things.ProductID.Name}}</center></td>
+					<td><center>{{things.ProductID.category.catName}}</center></td>
 					<td><center>{{things.price}}</center></td>
                     <td><center>{{things.Quantity}}</center></td>
 					<td><center><i><a href="{% url 'delol' things.id %}">Delete</a></i></center></td>
