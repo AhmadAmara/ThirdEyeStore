@@ -18,8 +18,10 @@ class LoginForm(forms.Form):
 class SignUpForm(forms.Form):
    email =  forms.EmailField(label="Enter Email") 
    password = forms.CharField(widget = forms.PasswordInput())
-  
 
+
+class Editqtyform(forms.Form):
+   quantity = forms.IntegerField()
 
 class ProductForm(forms.ModelForm):
    class Meta:

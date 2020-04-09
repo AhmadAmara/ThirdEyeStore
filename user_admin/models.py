@@ -13,6 +13,8 @@ class User(models.Model):
     password = models.CharField(max_length = 200)
     typ = models.CharField(max_length = 200,default='customer')
 
+    class Meta:
+        ordering = ['typ']
 
     def __str__(self):
         return  self.email + '|' +self.password+'|'+self.typ
@@ -33,10 +35,16 @@ class Product(models.Model):
 
 class Cart(models.Model):
     User_em = models.ForeignKey(User,on_delete=models.CASCADE)
+    dt=models.DateTimeField(auto_now=True)
+    total_price = models.FloatField(default=0)
     isCheckout = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['dt']
+        
     def __str__(self):
-        return str(self.User_em) + ' | ' + str(self.isCheckout)
+        return str(self.User_em) + ' | ' + str(self.dt)+ ' | ' + str(self.total_price)+ ' | ' + str(self.isCheckout)
+
 
 
 class Order_Line(models.Model):
