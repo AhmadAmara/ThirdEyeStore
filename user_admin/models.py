@@ -27,7 +27,10 @@ class Product(models.Model):
     Weight = models.FloatField()
     price = models.FloatField()
     Quantity = models.IntegerField(default=0)
-    
+
+    packge_sale = models.ManyToManyField('PackgeSale', through='ProductAndPackgeMemberShip')
+    product_discout = models.ManyToManyField('ProductDiscount', through='ProductAndDiscountMemberShip')
+
     def __str__(self):
         return self.Name +' | ' +str(self.category) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) +' | ' + str(self.Weight)
 
@@ -58,6 +61,10 @@ class Order_Line(models.Model):
         return str(self.CartId) +' | ' +str(self.ProductID) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> added models for discount and sales
 ###################################### Sales And Discounts #######################################################
 
 

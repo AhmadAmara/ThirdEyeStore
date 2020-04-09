@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> added models for discount and sales
 from django.db import models
 
 class IntegerRangeField(models.IntegerField):
