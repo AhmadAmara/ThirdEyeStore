@@ -21,6 +21,12 @@ urlpatterns = [
   path('ControlPanel/Categories/<Category_ID>', views.adminEditcat, name="adminEditcat"),
   path('ControlPanel/Categories/add/', views.adminaddcat, name="adminaddcat"),
   path('ControlPanel/Products/', views.Adminprod, name="Adminprod"),
+
+  path('ControlPanel/Discounts/', views.AdminDiscounts, name="AdminDiscounts"),
+  path('ControlPanel/Discounts/addProductToDiscount', views.addProductToDiscount, name="addProductToDiscount"),
+
+  path('ControlPanel/Sales/', views.AdminSales, name="AdminSales"),
+
   path('ControlPanel/Users/', views.Adminusers, name="Adminusers"),
   path('ControlPanel/Users/<User_ID>', views.adminEditUser, name="adminEditUser"),
   path('ControlPanel/Users/add/', views.adminadduser, name="adminadduser"),

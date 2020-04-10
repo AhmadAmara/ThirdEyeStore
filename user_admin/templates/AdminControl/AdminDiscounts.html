@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Edit Discount{% endblock %}
+{% block content %}
+<html>
+
+   <body>
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>This is Admin Edit Discount</h1></center>
+
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>Title</th>
+       <th>Discount percent</th>
+       <th></th>
+
+    </tr>
+{% if discounts %}
+
+		{% for discount in discounts %}
+						
+				<tr>	
+					<td ><center>{{discount.title}}</center></td>
+                    <td><center>{{discount.discount_percent}}</center></td>
+					<td><form name="editform"
+					   action = "{% url 'home' %}"  >
+					   {% csrf_token %}
+                	   <input type="submit" value="Edit" >
+					   </form></td>
+
+					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
+					
+				</tr>
+			
+		{% endfor %}
+	</table>
+	<center><form name="addDiscount"
+	  action = "{% url 'home' %}" >
+	  {% csrf_token %}
+      <input type="submit" value="add a Discount" >
+      </form></center>
+
+{% endif %}
+   </body>
+</html>
+{% endblock %}
+
+<!--  <input class="form-control mr-sm-2" type="search" placeholder="{{ product.category.catName }}" 
+      value="{{ product.category.catName }}" aria-label="Search" name="category">
+      -->

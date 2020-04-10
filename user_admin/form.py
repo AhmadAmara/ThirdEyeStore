@@ -1,6 +1,7 @@
 from django import forms  
 from .models import Product
 from .models import Category
+from .models import ProductAndDiscountMemberShip
 from .models import User
 
 class StudentForm(forms.Form):  
@@ -32,6 +33,11 @@ class CategoryForm(forms.ModelForm):
    class Meta:
       model = Category
       fields= ["catName", "isAvtive"]
+   
+class DiscountToProductForm(forms.ModelForm):
+   class Meta:
+      model = ProductAndDiscountMemberShip
+      fields= ['product', 'product_discount', 'end_date']
 
 class UserForm(forms.ModelForm):
    class Meta:

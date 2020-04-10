@@ -3,10 +3,16 @@ import datetime
 from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
+<<<<<<< HEAD
 from user_admin.form import StudentForm,UserForm ,Editqtyform
+=======
+from user_admin.form import StudentForm,UserForm 
+from user_admin.form import DiscountToProductForm
+>>>>>>> working in discounts
 from user_admin.form import LoginForm ,SignUpForm,ProductForm,CategoryForm
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
+from .models import ProductAndDiscountMemberShip, ProductDiscount
 from .models import Category
 # for redirect
 from django.contrib import messages
@@ -453,3 +459,30 @@ def adminadduser(request):
             return redirect('.')
    else:        
         return render(request, 'AdminControl/AdminAdduser.html')
+
+
+        
+def AdminDiscounts(request):
+    discounts = ProductDiscount.objects.all()
+    return render(request, 'AdminControl/AdminDiscounts.html',{'discounts' : discounts})
+
+def addProductToDiscount(request):
+    if request.method == 'POST':  
+        productDiscountM = ProductAndDiscountMemberShip()
+        form = DiscountToProductForm(request.POST or None, instance=productDiscountM)
+        if form.is_valid():
+            form.save()
+            messages.success(request, (productDiscountM.product.name +' Has Been Added!'))
+            return redirect('..')
+        # else:
+        #    # print(form.errors.as_data())
+        #     messages.success(request, (' this category is exists,try agin'))
+        #     return redirect('.')
+    else:
+        
+        Categories = Category.objects.values('catName')
+        return render(request, 'AdminControl/AdminAddcat.html', {'Categories':Categories})
+
+def AdminSales(request):
+    users=User.objects.all()
+    return render(request, 'AdminControl/Adminusers.html',{'users':users})
