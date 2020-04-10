@@ -33,8 +33,9 @@ td {
 
     </tr>
 		{% for user in users %}
-						
-				<tr>	
+				{%if user.typ == 'admin'%}	<tr style='background:#ffe6e6'>
+				{%else%} <tr>
+				{%endif%}
 					<td ><center>{{user.email}}</center></td>
 					<td ><center>{{user.password}}</center></td>
 					<td ><center>{{user.typ}}</center></td>
