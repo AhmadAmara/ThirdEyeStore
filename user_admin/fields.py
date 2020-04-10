@@ -1,7 +1,10 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> added models for discount and sales
+=======
+>>>>>>> crazy 2
 from django.db import models
 
 class IntegerRangeField(models.IntegerField):
