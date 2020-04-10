@@ -54,9 +54,12 @@ class Order_Line(models.Model):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> added models for discount and sales
+=======
+>>>>>>> crazy
 ###################################### Sales And Discounts #######################################################
 
 
