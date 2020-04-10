@@ -16,3 +16,15 @@ admin.site.register(Order_Line)
 
 from .models import Cart
 admin.site.register(Cart)
+
+from .models import PackgeSale
+admin.site.register(PackgeSale)
+
+from .models import ProductAndPackgeMemberShip
+admin.site.register(ProductAndPackgeMemberShip)
+
+from .models import ProductDiscount
+admin.site.register(ProductDiscount)
+
+from .models import ProductAndDiscountMemberShip
+admin.site.register(ProductAndDiscountMemberShip)

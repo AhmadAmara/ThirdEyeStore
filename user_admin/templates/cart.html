@@ -24,8 +24,14 @@
 					<td><center>{{things.ProductID.Name}}</center></td>
 					<td><center>{{things.ProductID.category.catName}}</center></td>
 					<td><center>{{things.price}}</center></td>
-                    <td><center>{{things.Quantity}}</center></td>
-					<td><center><i><a href="{% url 'delol' things.id %}">Delete</a></i></center></td>
+                    <td><center>
+						<form method="POST" action="{% url 'editqty' things.id %}"> {%csrf_token%}
+  						<input  name="quantity" value="{{things.Quantity}}" type="number" min="1" max="10" style="width:50px; text-align:center">
+  						<button type="submit" >Update</button>
+						</form>
+					</center></td>
+					<td><center><i><button onclick="confirmdel({{things.id}})">Delete</button></i></center></td>
+					<!--<td><center><i><a href="{% url 'delol' things.id %}">Delete</a></i></center></td>-->
 
 				</tr>
 		{% endfor %}
@@ -33,6 +39,18 @@
                     <td colspan = "5" ><b><center>total price is : {{total_price}}</center></b></td>
 				</tr>
 	</table>
-	<button type="button" disabled>Buy it now</button>
+	<button onclick="confirmbuy()">Buy it now</button>
+
+<script>
+	function confirmdel(id) {
+	c=confirm("do you want to delete this order from cart ?")
+    if(c){window.location.replace("../delol/"+id);}
+	}
+	
+	function confirmbuy() {
+	c=confirm("confirm")
+    if(c){ window.location.replace("../buy/");}
+	}
+</script>
 {% endif %}
 {% endblock content %}

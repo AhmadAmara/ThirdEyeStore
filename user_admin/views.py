@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from datetime import datetime
+import datetime
 from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
-from user_admin.form import StudentForm,UserForm  
+from user_admin.form import StudentForm,UserForm ,Editqtyform
 from user_admin.form import LoginForm ,SignUpForm,ProductForm,CategoryForm
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
@@ -142,7 +142,6 @@ def addorder(request,Product_id):
 def delol(request,ol_id):
     if request.session.get('logged_in'):
         ol = Order_Line.objects.get(pk=ol_id)
-        print(ol)
         ol.delete()
         # messages.success(request, ('Item Has Been Deleted!'))
         return redirect('../cart/')
@@ -154,7 +153,7 @@ def forgotten_password(request):
 
 
 def cart(request):
-
+    
     if request.session.get('logged_in'):
 
         try:
@@ -166,12 +165,71 @@ def cart(request):
             cartid.save()
 
         ord_lin = Order_Line.objects.filter(CartId=cartid)
-        total_price=0
+        totalprice=0
         for ol in ord_lin :
-            total_price += ol.Quantity * ol.price
-        return render(request, 'cart.html', {'all_items': ord_lin, 'total_price': total_price})
+            totalprice += ol.Quantity * ol.price
+        return render(request, 'cart.html', {'all_items': ord_lin,'total_price':totalprice})
     else:
         return render(request, 'home.html')
+
+def buy(request):
+    
+    if request.session.get('logged_in'):
+        
+        email = request.session['email']
+        old_cart = Cart.objects.filter(User_em=email).get(isCheckout=False)
+        ord_lin = Order_Line.objects.filter(CartId=old_cart)
+        totalprice=0
+        for ol in ord_lin :
+            totalprice += ol.Quantity * ol.price
+        old_cart.total_price=totalprice
+        old_cart.isCheckout=True
+        old_cart.dt = datetime.datetime.now()
+        old_cart.save()
+        
+
+
+        new_cart=Cart()
+        new_cart.User_em=User.objects.get(pk=email)
+        new_cart.save()
+
+        return redirect('../cart/')
+    else:
+        return render(request, 'home.html')
+
+
+def editqty(request,ol_id):
+
+    if (request.session.get('logged_in') and request.method == 'POST'):
+        edo = Editqtyform(request.POST)
+        if(edo.is_valid()):
+            
+            quantity = edo.cleaned_data['quantity']
+
+            ol = Order_Line.objects.get(pk=ol_id)
+            ol.Quantity=quantity
+            ol.save();
+        else:
+            print ('------------------------------else------------------------------')
+
+        return redirect('../cart/')
+    else:
+        return render(request, 'home.html')
+
+def history(request):
+
+    if request.session.get('logged_in'):   
+        title='this is history'
+        carts = Cart.objects.filter(User_em=request.session['email']).filter(isCheckout=True)
+        ols=[]
+        for c in carts : 
+            ol=Order_Line.objects.filter(CartId=c)
+            ols.append((c,ol))
+        ols.reverse()
+        return render(request, 'history.html', {'title':title,'ols':ols})
+    else:
+        return render(request, 'home.html')
+
 
 
 ###################################ControlPanel Admin####################
