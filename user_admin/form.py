@@ -1,7 +1,7 @@
 from django import forms  
 from .models import Product
 from .models import Category
-from .models import User
+from .models import User, ProductDiscount
 
 class StudentForm(forms.Form):  
     firstname = forms.CharField(label="Enter first name",max_length=50)  
@@ -32,6 +32,12 @@ class CategoryForm(forms.ModelForm):
    class Meta:
       model = Category
       fields= ["catName", "isAvtive"]
+
+class DiscountForm(forms.ModelForm):
+   class Meta:
+      model = ProductDiscount
+      fields = ["title", "discount_percent"]
+
 
 class UserForm(forms.ModelForm):
    class Meta:

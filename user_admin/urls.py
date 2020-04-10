@@ -27,7 +27,11 @@ urlpatterns = [
   path('ControlPanel/Products/<products_ID>', views.adminEditP, name="adminEditP"),
   path('ControlPanel/Products/Delet/<products_ID>', views.adminDeletP, name="adminDeletP"),
   path('ControlPanel/Products/add/', views.adminaddP, name="adminaddP"),
-  path('forgotten_password/', views.forgotten_password, name="forgotten_password")
+  path('forgotten_password/', views.forgotten_password, name="forgotten_password"),
+
+  path('ControlPanel/Discounts/', views.discounts, name="Discounts"),
+  path('ControlPanel/Discounts/DiscountEdit<discount_id>', views.editDiscount, name="editDiscount"),
+  path('ControlPanel/Discounts/UpdateDiscountProducts<discount_id>', views.updateDiscountProducts, name="updateDiscountProducts"),
 
 ]
 

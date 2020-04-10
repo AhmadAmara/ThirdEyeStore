@@ -3,14 +3,14 @@
 {% block content %}
 
 
-{% if all_items %}
+{% if products %}
 <style>
 td {
 	width:25%;
 	text-align: center;
 }
 </style>
-<center><h1>Products page in the administration</h1></center>
+<center><h1>Products in this discount</h1></center>
 
 {% if messages %}
 	{% for message in messages %}
@@ -27,34 +27,28 @@ td {
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
        <th>Name</th>
-       <th>category</th>
        <th>Weight</th>
-       <th>price</th>
-       <th>Quantity</th>
        <th></th>
        <th></th>
 
     </tr>
-		{% for things in all_items %}
+		{% for product in products %}
 						
 				<tr>	
-					<td ><center>{{things.Name}}</center></td>
-					<td ><center>{{things.category.catName}}</center></td>
-					<td><center>{{things.Weight}}</center></td>
-					<td><center>{{things.price}}</center></td>
-                    <td><center>{{things.Quantity}}</center></td>
-					<td><form name="editform"
+					<td ><center>{{product.Name}}</center></td>
+					<td><center>{{product.price}}</center></td>
+					{% comment %} <td><form name="editform"
 					   action = "{% url 'adminEditP' things.id %}"  >
 					   {% csrf_token %}
-                	   <input type="submit" value="Edit" >
+                	   <input type="submit" value="Edit" > {% endcomment %}
 
-                    </form></td>
+                    {% comment %} </form></td>
 						<td><form name="deleteform"
 					   action = "{% url 'adminDeletP' things.id %}" 
                        method = "POST">
 					   {% csrf_token %}
                 	<input type="submit" value="Delete" >
-                    </form></td>
+                    </form></td> {% endcomment %}
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</tr>
@@ -63,11 +57,11 @@ td {
 	</table>
 {% endif %}
 
-	<center><form name="addprod"
+	{% comment %} <center><form name="addprod"
 	  action = "{% url 'adminaddP' %}" >
 	  {% csrf_token %}
       <input type="submit" value="add a Product" >
-      </form></center>
+      </form></center> {% endcomment %}
 
 {% endblock content %}
 

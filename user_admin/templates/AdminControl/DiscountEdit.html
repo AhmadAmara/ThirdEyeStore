@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Edit Discount{% endblock %}
+{% block content %}
+<html>
+
+   <body>
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>This is Admin Edit Discount</h1></center>
+
+	{% if discount %}
+	<form class="form-inline my-2 my-lg-0" method="POST">
+      {% csrf_token %}
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>title</th>
+       <th>discount percent</th>
+       
+       <tr>
+	   <td>
+      <input class="form-control mr-sm-2" placeholder="{{ discount.title }}" 
+      value="{{ discount.title }}" name="title">
+      </td>
+      <td>
+       <input class="form-control mr-sm-2" value="{{ discount.discount_percent }}" placeholder="{{ discount.discount_percent }}" name="discount_percent">
+      </td>
+      </table>
+
+      <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Edit Discount</button>
+      
+      <br>
+    </form>
+	{% endif %}
+   </body>
+</html>
+{% endblock %}
+

@@ -3,14 +3,14 @@
 {% block content %}
 
 
-{% if all_items %}
+{% if discounts %}
 <style>
 td {
 	width:25%;
 	text-align: center;
 }
 </style>
-<center><h1>Categories page in the administration </h1></center>
+<center><h1>Discounts page in the administration </h1></center>
 
 {% if messages %}
 	{% for message in messages %}
@@ -26,20 +26,26 @@ td {
 
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
-       <th>category</th>
-       <th>Is Active</th>
+       <th>title</th>
+       <th>discount_percent</th>
+       <th></th>
        <th></th>
 
     </tr>
-		{% for things in all_items %}
+		{% for discount in discounts %}
 						
 				<tr>	
-					<td ><center>{{things.catName}}</center></td>
-                    <td><center>{{things.isAvtive}}</center></td>
+					<td ><center>{{discount.title}}</center></td>
+                    <td><center>{{discount.discount_percent}}</center></td>
 					<td><form name="editform"
-					   action = "{% url 'adminEditcat' things.id %}"  >
+					   action = "{% url 'editDiscount' discount.id %}"  >
 					   {% csrf_token %}
                 	   <input type="submit" value="Edit" >
+					   </form></td>
+                       <td><form name="Products"
+					   action = "{% url 'updateDiscountProducts' discount.id %}"  >
+					   {% csrf_token %}
+                	   <input type="submit" value="Products" >
 					   </form></td>
 
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
@@ -48,14 +54,8 @@ td {
 			
 		{% endfor %}
 	</table>
-	{% endif %}
-	<center><form name="addcat"
-	  action = "{% url 'adminaddcat' %}" >
-	  {% csrf_token %}
-      <input type="submit" value="add a Category" >
-      </form></center>
 
-
+{% endif %}
 {% endblock content %}
 
 <!--

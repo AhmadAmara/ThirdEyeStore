@@ -4,10 +4,11 @@ from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
 from user_admin.form import StudentForm,UserForm ,Editqtyform
-from user_admin.form import LoginForm ,SignUpForm,ProductForm,CategoryForm
+from user_admin.form import LoginForm ,SignUpForm,ProductForm,CategoryForm, DiscountForm
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
 from .models import Category
+from .models import ProductAndDiscountMemberShip, ProductDiscount
 # for redirect
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -453,3 +454,53 @@ def adminadduser(request):
             return redirect('.')
    else:        
         return render(request, 'AdminControl/AdminAdduser.html')
+
+################## discounts views ##################
+def discounts(request):
+    discounts = ProductDiscount.objects.all()
+    return render(request, 'AdminControl/Discounts.html',{'discounts':discounts})
+
+
+def editDiscount(request, discount_id):
+    # discountsM = ProductAndDiscountMemberShip.objects.values('id')
+    if request.method == 'POST':  
+        discount = ProductDiscount.objects.get(id=discount_id)
+        form = DiscountForm(request.POST or None, instance = discount)
+        # print("aaaaaaa")
+        print(form)
+        if form.is_valid():
+            title2 = form['title'].value()
+            form.save()
+            messages.success(request, (title2 +' Has Been Edited!'))
+            return  redirect('.')
+        else:
+    #         #print(form.errors.as_data())
+            messages.success(request, ('edit failed, try agin'))
+            return redirect('.')
+    else:       
+        discount = ProductDiscount.objects.get(id=discount_id)
+        return render(request, 'AdminControl/DiscountEdit.html', {'discount':discount})
+
+
+def updateDiscountProducts(request, discount_id):
+    print("ttttttttttttttttttttttttt")
+    all_products = Product.objects.all()
+    discountsM = ProductAndDiscountMemberShip.objects.filter(product_discount_id=discount_id)
+    print("1111111111111111112222222222222")
+    print(discountsM[0].product)
+    if request.method == 'POST':  
+        discount = ProductAndDiscountMemberShip.objects.get(id=discount_id)
+        form = CategoryForm(request.POST or None, instance=discount)
+        if form.is_valid():
+            title2 = form['title'].value()
+            discount_percent2 = form['discount_percent'].value()
+            form.save()
+            messages.success(request, (title2 +' Has Been Edited!'))
+            return  redirect('.')
+        else:
+    #         #print(form.errors.as_data())
+            messages.success(request, (' this discount is exists,try agin'))
+            return redirect('.')
+    else:       
+        discount = ProductAndDiscountMemberShip.objects.get(id=discount_id)
+        return render(request, 'AdminControl/UpdateDiscountProducts.html', {'discont':discount,'discountsM':discountsM, 'products':all_products})
