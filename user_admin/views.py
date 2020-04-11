@@ -481,13 +481,20 @@ def editDiscount(request, discount_id):
         discount = ProductDiscount.objects.get(id=discount_id)
         return render(request, 'AdminControl/DiscountEdit.html', {'discount':discount})
 
+def getProductsOfDiscount(discount_id):
+    discountsM = ProductAndDiscountMemberShip.objects.filter(product_discount_id=discount_id)
+    products = []
+    for discountM in discountsM:
+        products.append(discountM.product)
+    return products
 
 def updateDiscountProducts(request, discount_id):
-    print("ttttttttttttttttttttttttt")
-    all_products = Product.objects.all()
+    all_products = list(Product.objects.all())
+    discount_products = getProductsOfDiscount(discount_id)
+    other_products = list(set(all_products) - set(discount_products))
     discountsM = ProductAndDiscountMemberShip.objects.filter(product_discount_id=discount_id)
-    print("1111111111111111112222222222222")
-    print(discountsM[0].product)
+    
+    print(discount_products)
     if request.method == 'POST':  
         discount = ProductAndDiscountMemberShip.objects.get(id=discount_id)
         form = CategoryForm(request.POST or None, instance=discount)
@@ -502,5 +509,29 @@ def updateDiscountProducts(request, discount_id):
             messages.success(request, (' this discount is exists,try agin'))
             return redirect('.')
     else:       
-        discount = ProductAndDiscountMemberShip.objects.get(id=discount_id)
-        return render(request, 'AdminControl/UpdateDiscountProducts.html', {'discont':discount,'discountsM':discountsM, 'products':all_products})
+        # discount = ProductAndDiscountMemberShip.objects.get(id=discount_id)
+        return render(request, 'AdminControl/UpdateDiscountProducts.html', {'discountsM':discountsM,'discount_id':discount_id ,'all_products':all_products, 'discount_products': discount_products ,'other_products':other_products})
+
+
+def deleteDiscountMemberShip(request, memberShip_id):
+    if request.method == 'POST':  
+        ProductAndDiscountMemberShip.objects.filter(id=memberShip_id).delete()
+        messages.success(request, ('the product has been deleted from this discount'))
+        return  redirect('..')
+    else:
+        return  redirect('.')
+
+def addDiscountMemberShip(request, product_id, discount_id):
+    if request.method == 'POST':  
+
+        product = Product.objects.get(id=product_id)
+        product_discount = ProductDiscount.objects.get(id=discount_id)
+        discountM = ProductAndDiscountMemberShip(product=product, product_discount=product_discount, end_date=datetime.date)
+        discountM.save()
+        # discountM.save()
+        return redirect('.')
+    else:
+        discount = ProductDiscount.objects.get(id=discount_id)
+        product = Product.objects.get(id=product_id)
+
+        return render(request, 'AdminControl/addDiscountMemberShip.html', {'product': product ,'discount':discount})
