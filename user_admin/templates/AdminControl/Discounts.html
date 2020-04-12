@@ -54,8 +54,14 @@ td {
 			
 		{% endfor %}
 	</table>
-
 {% endif %}
+
+<center><form name="addDiscount"
+	  action = "{% url 'addDiscount' %}" >
+	  {% csrf_token %}
+      <input type="submit" value="add a Discount" >
+      </form></center>
+
 {% endblock content %}
 
 <!--

@@ -471,8 +471,6 @@ def editDiscount(request, discount_id):
     if request.method == 'POST':  
         discount = ProductDiscount.objects.get(id=discount_id)
         form = DiscountForm(request.POST or None, instance = discount)
-        # print("aaaaaaa")
-        print(form)
         if form.is_valid():
             title2 = form['title'].value()
             form.save()
@@ -539,3 +537,18 @@ def addDiscountMemberShip(request, product_id, discount_id):
         product = Product.objects.get(id=product_id)
 
         return render(request, 'AdminControl/addDiscountMemberShip.html', {'product': product ,'discount':discount})
+
+def addDiscount(request):
+    if request.method == 'POST':  
+        productDiscount = ProductDiscount()
+        form = DiscountForm(request.POST or None, instance=productDiscount)
+        if form.is_valid():
+            form.save()
+            messages.success(request, (productDiscount.title+' Has Been Added!'))
+            return redirect('..')
+        else:
+           # print(form.errors.as_data())
+            messages.success(request, (' this discount is exists,try agin'))
+            return redirect('.')
+    else:
+        return render(request, 'AdminControl/AdminAddDiscount.html')
