@@ -1,5 +1,5 @@
 from django.db import models
-from user_admin.fields import IntegerRangeField
+from .fields import IntegerRangeField
 
 class Category(models.Model):
     catName = models.CharField(max_length = 200,unique=True)
