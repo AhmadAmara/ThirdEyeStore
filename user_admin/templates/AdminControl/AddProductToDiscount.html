@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Add Product to Discount{% endblock %}
+{% block content %}
+<html>
+
+   <body>
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>This is Admin Add Product to Discount</h1></center>
+
+	{% if discount and product%}
+	<form class="form-inline my-2 my-lg-0" method="POST">
+      {% csrf_token %}
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>product</th>
+       <th>product_discount</th>
+       
+       <tr>
+	   <td>
+      <input class="form-control mr-sm-2" placeholder="{{ product }}" 
+      value="{{ product }}" name="product">
+      </td>
+      <td>
+       <input class="form-control mr-sm-2" value="{{ product_discount }}" placeholder="{{ product_discount }}" name="product_discount">
+      </td>
+      </table>
+
+      <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Add to Discount</button>
+      
+      <br>
+    </form>
+	{% endif %}
+   </body>
+</html>
+{% endblock %}
+

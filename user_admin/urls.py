@@ -32,6 +32,9 @@ urlpatterns = [
   path('ControlPanel/Discounts/', views.discounts, name="Discounts"),
   path('ControlPanel/Discounts/DiscountEdit<discount_id>', views.editDiscount, name="editDiscount"),
   path('ControlPanel/Discounts/UpdateDiscountProducts<discount_id>', views.updateDiscountProducts, name="updateDiscountProducts"),
+  path('ControlPanel/Discounts/UpdateDiscountProducts/deleteDiscountMemberShip<memberShip_id>', views.deleteDiscountMemberShip, name="deleteDiscountMemberShip"),
+  path('ControlPanel/Discounts/UpdateDiscountProducts/addDiscountMemberShip<product_id><discount_id>', views.addDiscountMemberShip, name="addDiscountMemberShip"),
+
 
 ]
 

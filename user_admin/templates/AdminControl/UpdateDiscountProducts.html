@@ -3,7 +3,7 @@
 {% block content %}
 
 
-{% if products %}
+{% if discountsM %}
 <style>
 td {
 	width:25%;
@@ -27,12 +27,53 @@ td {
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
        <th>Name</th>
-       <th>Weight</th>
-       <th></th>
-       <th></th>
+       <th>Price</th>
+       <th>delete from discount</th>
 
     </tr>
-		{% for product in products %}
+		{% for membership in discountsM %}
+						
+				<tr>	
+					<td ><center>{{membership.product.Name}}</center></td>
+					<td><center>{{membership.product.price}}</center></td>
+					{% comment %} <td><form name="editform"
+					   action = "{% url 'adminEditP' things.id %}"  >
+					   {% csrf_token %}
+                	   <input type="submit" value="Edit" > {% endcomment %}
+					
+                    </form></td>
+						<td><form name="deleteDiscountMemberShip"
+					   action = "{% url 'deleteDiscountMemberShip' membership.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<input type="submit" value="Delete" >
+                    </form></td>
+					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
+					
+				</tr>
+			
+		{% endfor %}
+
+		
+	</table>
+{% endif %}
+
+{% if other_products %}
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>Add Products to this discount</h1></center>
+<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>Name</th>
+       <th>Price</th>
+       <th>AA to this discount</th>
+
+    </tr>
+{% for product in other_products %}
 						
 				<tr>	
 					<td ><center>{{product.Name}}</center></td>
@@ -41,35 +82,22 @@ td {
 					   action = "{% url 'adminEditP' things.id %}"  >
 					   {% csrf_token %}
                 	   <input type="submit" value="Edit" > {% endcomment %}
-
-                    {% comment %} </form></td>
-						<td><form name="deleteform"
-					   action = "{% url 'adminDeletP' things.id %}" 
+					
+                    </form></td>
+						<td><form name="addDiscountMemberShip"
+					   action = "{% url 'addDiscountMemberShip' product.id discount_id%}" 
                        method = "POST">
 					   {% csrf_token %}
-                	<input type="submit" value="Delete" >
-                    </form></td> {% endcomment %}
+                	<input type="submit" value="Add" >
+                    </form></td>
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</tr>
 			
 		{% endfor %}
-	</table>
+
 {% endif %}
 
-	{% comment %} <center><form name="addprod"
-	  action = "{% url 'adminaddP' %}" >
-	  {% csrf_token %}
-      <input type="submit" value="add a Product" >
-      </form></center> {% endcomment %}
 
 {% endblock content %}
 
-<!--
-						<td><form name="deleteform"
-					   action = "{% url 'adminDeletP' things.id %}" 
-                       method = "POST">
-					   {% csrf_token %}
-                	<input type="submit" value="Delete" >
-                    </form></td>	
--->
