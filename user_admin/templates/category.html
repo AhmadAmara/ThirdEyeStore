@@ -1,5 +1,7 @@
 {%extends 'base.html'%}
 
+{% load mathfilters %}
+
 {% block content %}
 
 
@@ -19,6 +21,8 @@ td {
        <th>Weight</th>
        <th>price</th>
 		<th>discount percent</th>
+		<th>final price</th>
+
        <th> </th>
 
     </tr>
@@ -28,8 +32,13 @@ td {
 					<td ><center>{{product.Name}}</center></td>
 					<td><center>{{product.Weight}}</center></td>
 					<td><center>{{product.price}}</center></td>
-					<td><center>{{percent}}%</center></td>
-
+					{%if percent != 'No Discount'%}
+						<td><center>{{percent}}%</center></td>
+						<td><center>{{ 100|sub:percent|div:100|mul:product.price}}</center></td>
+					{%else%}
+						<td><center>----</center></td>
+						<td><center>{{product.price}}</center></td>
+					{% endif %}
 					{%if product.Quantity%}
 					<td><form name="buyform"
 					   action = "{% url 'addorder' product.id %}" 
