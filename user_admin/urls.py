@@ -35,6 +35,8 @@ urlpatterns = [
   path('ControlPanel/Discounts/UpdateDiscountProducts/deleteDiscountMemberShip<memberShip_id>', views.deleteDiscountMemberShip, name="deleteDiscountMemberShip"),
   path('ControlPanel/Discounts/UpdateDiscountProducts/addDiscountMemberShip<product_id><discount_id>', views.addDiscountMemberShip, name="addDiscountMemberShip"),
   path('ControlPanel/Discounts/add/', views.addDiscount, name="addDiscount"),
+  path('ControlPanel/Discounts/delete/<discount_id>', views.deleteDiscount, name="deleteDiscount"),
+
 
 ]
 

@@ -548,7 +548,13 @@ def addDiscount(request):
             return redirect('..')
         else:
            # print(form.errors.as_data())
-            messages.success(request, (' this discount is exists,try agin'))
+            messages.success(request, ('make sure to fill all the fileds,try agin'))
             return redirect('.')
     else:
         return render(request, 'AdminControl/AdminAddDiscount.html')
+
+def deleteDiscount(request,discount_id):
+    discount = ProductDiscount.objects.get(id=discount_id)
+    discount.delete()
+    messages.success(request, (discount.title+' Has Been Deleted!'))
+    return  redirect('..')
