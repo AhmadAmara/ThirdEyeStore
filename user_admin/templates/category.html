@@ -3,7 +3,7 @@
 {% block content %}
 
 
-{% if all_items %}
+{% if products_dict %}
 <style>
 td {
 	width:25%;
@@ -18,18 +18,21 @@ td {
        <th>Name</th>
        <th>Weight</th>
        <th>price</th>
+		<th>discount percent</th>
        <th> </th>
 
     </tr>
-		{% for things in all_items %}
+		{% for product, percent in products_dict.items %}
 						
 				<tr>	
-					<td ><center>{{things.Name}}</center></td>
-					<td><center>{{things.Weight}}</center></td>
-					<td><center>{{things.price}}</center></td>
-					{%if things.Quantity%}
+					<td ><center>{{product.Name}}</center></td>
+					<td><center>{{product.Weight}}</center></td>
+					<td><center>{{product.price}}</center></td>
+					<td><center>{{percent}}%</center></td>
+
+					{%if product.Quantity%}
 					<td><form name="buyform"
-					   action = "{% url 'addorder' things.id %}" 
+					   action = "{% url 'addorder' product.id %}" 
                        method = "POST">
 					   {% csrf_token %}
                 	<input type="submit" value="Add to Cart" >

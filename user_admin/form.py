@@ -41,7 +41,7 @@ class DiscountForm(forms.ModelForm):
 class DiscountMemberShipForm(forms.ModelForm):
    class Meta:
       model = ProductAndDiscountMemberShip
-      fields = ["product", "product_discount", "end_date"]
+      fields = ["product", "product_discount"]
 
 class UserForm(forms.ModelForm):
    class Meta:
