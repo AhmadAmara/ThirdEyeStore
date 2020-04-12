@@ -101,7 +101,12 @@ def category(request,category_id):
     categName = Category.objects.get(pk=category_id)
     Products = Product.objects.filter(category=category_id)
     memberships = ProductAndDiscountMemberShip.objects.all()
-    products_dict = dict((membership.product, membership.product_discount.discount_percent) for membership in list(memberships) if membership.product in Products)
+    
+    # to get highest discounts perecnts
+    product_discount_pairs = [(membership.product, membership.product_discount.discount_percent) for membership in list(memberships) if membership.product in Products]
+    product_discount_pairs.sort(key=lambda x: x[1])
+    
+    products_dict = dict(product_discount_pairs)
     other_products = set(Products) - (products_dict.keys())
     other_products = dict((product, 'No Discount') for product in other_products)
     products_dict.update(other_products)
@@ -517,12 +522,9 @@ def updateDiscountProducts(request, discount_id):
 
 def deleteDiscountMemberShip(request, memberShip_id):
     discount_id = ProductAndDiscountMemberShip.objects.get(id=memberShip_id).product_discount.id
-    if request.method == 'POST':  
-        ProductAndDiscountMemberShip.objects.filter(id=memberShip_id).delete()
-        messages.success(request, ('the product has been deleted from this discount'))
-        return  redirect('/ControlPanel/Discounts/UpdateDiscountProducts' + str(discount_id))
-    else:
-        return  redirect('/ControlPanel/Discounts/UpdateDiscountProducts' + str(discount_id))
+    ProductAndDiscountMemberShip.objects.filter(id=memberShip_id).delete()
+    messages.success(request, ('the product has been deleted from this discount'))
+    return  redirect('../'+str(discount_id))
 
 def addDiscountMemberShip(request, product_id, discount_id):
     if request.method == 'POST':  
@@ -531,7 +533,7 @@ def addDiscountMemberShip(request, product_id, discount_id):
         product_discount = ProductDiscount.objects.get(id=discount_id)
         discountM = ProductAndDiscountMemberShip(product=product, product_discount=product_discount)
         discountM.save()
-        return  redirect('/ControlPanel/Discounts/UpdateDiscountProducts' + str(discount_id))
+        return  redirect('../' + str(discount_id))
     else:
         discount = ProductDiscount.objects.get(id=discount_id)
         product = Product.objects.get(id=product_id)
