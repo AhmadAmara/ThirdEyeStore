@@ -30,11 +30,11 @@ td {
       </td>
       <td>
        <select name="category" >
-       <option value={{ product.category.catName }} selected>{{ product.category.catName }}</option>
+       <option value={{ product.category.id }} selected>{{ product.category.catName }}</option>
 
        {% for categ in Categories %}
            {% if not categ.catName == product.category.catName %}
-             <option value={{categ.catName}}>{{categ.catName}}</option>
+             <option value={{categ.id}}>{{categ.catName}}</option>
            {% endif %}
        {% endfor %}
        </select>

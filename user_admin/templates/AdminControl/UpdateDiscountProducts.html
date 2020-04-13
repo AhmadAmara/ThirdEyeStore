@@ -2,6 +2,12 @@
 
 {% block content %}
 
+<td><form name="Back To Discounts"
+action = "{% url 'Discounts'%}" 
+method = "POST">
+{% csrf_token %}
+<input type="submit" value="Back To Discounts" >
+</form></td>
 
 {% if discountsM %}
 <style>
