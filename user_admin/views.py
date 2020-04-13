@@ -100,6 +100,11 @@ def categories(request):
 def category(request,category_id):
     categName = Category.objects.get(pk=category_id)
     Products = Product.objects.filter(category=category_id).values()
+    m=ProductAndDiscountMemberShip.objects.filter(product__in=Products).distinct() 
+    #print(m)
+    for M in m:
+      print(M)
+    
     return render(request, "category.html",{'category':categName.catName,'all_items': Products})
 
 def signout(request):
