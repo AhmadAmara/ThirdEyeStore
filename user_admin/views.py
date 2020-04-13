@@ -99,29 +99,10 @@ def categories(request):
 
 def category(request,category_id):
     categName = Category.objects.get(pk=category_id)
-<<<<<<< HEAD
-    Products = Product.objects.filter(category=category_id).values()
-    m=ProductAndDiscountMemberShip.objects.filter(product__in=Products).distinct() 
-    #print(m)
-    for M in m:
-      print(M)
-    
-    return render(request, "category.html",{'category':categName.catName,'all_items': Products})
-=======
-    Products = Product.objects.filter(category=category_id)
-    memberships = ProductAndDiscountMemberShip.objects.all()
-    
-    # to get highest discounts perecnts
-    product_discount_pairs = [(membership.product, (membership.product_discount.discount_percent, (membership.product.price*(100-membership.product_discount.discount_percent)/100))) 
-        for membership in list(memberships) if membership.product in Products]
-    product_discount_pairs.sort(key=lambda x: x[1][0])
-    
-    products_dict = dict(product_discount_pairs)
     other_products = set(Products) - (products_dict.keys())
     other_products = dict((product, ('No Discount', product.price)) for product in other_products)
     products_dict.update(other_products)
     return render(request, "category.html",{'category':categName.catName,'all_items': Products, 'products_dict': products_dict})
->>>>>>> c861889da1cd44892ecd9460c4aa42fe34957096
 
 def signout(request):
     try:
@@ -131,7 +112,6 @@ def signout(request):
     except KeyError:
         pass
     return render(request, "home.html")
-
 def addorder(request,Product_id):
     if request.session.get('logged_in'):
         product = Product.objects.get(pk=Product_id)
