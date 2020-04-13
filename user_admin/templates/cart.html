@@ -10,15 +10,17 @@
 	<table class="table table-bordered">
 				<tr style="background:#4285F4;color:#eee;">
     				
-					<td><center><b>Product Name</b></center></td>
-					<td><center><b>Category</b></center></td>
-					<td><center><b>Price</b></center></td>
-					<td><center><b>Quantity</b></center></td>
-					<td width="10%"/>
+					<th><center><b>Product Name</b></center></th>
+					<th><center><b>Category</b></center></th>
+					<th><center><b>Price</b></center></th>
+					<th><center><b>Quantity</b></center></th>
+					<th>discount percent</th>
+					<th>final price</th>
+					<th width="10%"/>
 
   				</tr>
 
-		{% for things in all_items %}
+		{% for things,dis,aft in all_items %}
 				<tr>
                 	
 					<td><center>{{things.ProductID.Name}}</center></td>
@@ -30,16 +32,18 @@
   						<button type="submit" >Update</button>
 						</form>
 					</center></td>
+					<td><center>{{dis}}%</center></td>
+					<td><center>{{aft}}</center></td>
 					<td><center><i><button onclick="confirmdel({{things.id}})">Delete</button></i></center></td>
 					<!--<td><center><i><a href="{% url 'delol' things.id %}">Delete</a></i></center></td>-->
 
 				</tr>
 		{% endfor %}
 				<tr>
-                    <td colspan = "5" ><b><center>total price is : {{total_price}}</center></b></td>
+                    <td colspan = "7" ><b><center>total price is : {{total_price}}</center></b></td>
 				</tr>
 	</table>
-	<button onclick="confirmbuy()">Buy it now</button>
+	<button onclick="confirmbuy({{total_price}})">Buy it now</button>
 
 <script>
 	function confirmdel(id) {
@@ -47,8 +51,8 @@
     if(c){window.location.replace("../delol/"+id);}
 	}
 	
-	function confirmbuy() {
-	c=confirm("confirm")
+	function confirmbuy(tp) {
+	c=confirm("your cart cost is:"+ tp +" \nplease confirm ")
     if(c){ window.location.replace("../buy/");}
 	}
 </script>
