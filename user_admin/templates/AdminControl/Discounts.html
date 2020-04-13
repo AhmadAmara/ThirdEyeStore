@@ -30,6 +30,7 @@ td {
        <th>discount_percent</th>
        <th></th>
        <th></th>
+		<th></th>
 
     </tr>
 		{% for discount in discounts %}
@@ -47,6 +48,13 @@ td {
 					   {% csrf_token %}
                 	   <input type="submit" value="Products" >
 					   </form></td>
+						
+						<td><form name="deleteDiscount"
+					   action = "{% url 'deleteDiscount' discount.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<input type="submit" value="Delete" >
+                    </form></td>
 
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
@@ -54,8 +62,14 @@ td {
 			
 		{% endfor %}
 	</table>
-
 {% endif %}
+
+<center><form name="addDiscount"
+	  action = "{% url 'addDiscount' %}" >
+	  {% csrf_token %}
+      <input type="submit" value="add a Discount" >
+      </form></center>
+
 {% endblock content %}
 
 <!--

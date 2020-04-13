@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Adding Disount{% endblock %}
+{% block content %}
+<html>
+
+   <body>
+<style>
+td {
+	width:25%;
+	text-align: center;
+}
+</style>
+<center><h1>This is Admin Add Disount</h1></center>
+{% if messages %}
+	{% for message in messages %}
+		<div class="alert alert-warning alert-dismissable" role="alert">
+			<button class="close" data-dismiss="alert">
+	            <small><sup>x</sup></small>
+	        </button>
+			{{ message }}
+		</div>
+	{% endfor%}
+
+{% endif %}
+	<form class="form-inline my-2 my-lg-0" method="POST">
+      {% csrf_token %}
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>title</th>
+       <th>discount_percent</th>
+  
+       <tr>
+	   <td>
+      <input class="form-control mr-sm-2" type="search"  aria-label="Search" name="title">
+      </td>
+       <td>
+
+             <input class="form-control mr-sm-2" type="search"  aria-label="Search" name="discount_percent">
+
+       </div>
+
+      </td>
+
+    </tr>
+      </table>
+      <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Add Discount</button>
+          <br>
+
+    </form>
+   </body>
+</html>
+{% endblock %}
+
+<!--  <input class="form-control mr-sm-2" type="search" placeholder="{{ product.category.catName }}" 
+      value="{{ product.category.catName }}" aria-label="Search" name="category">
+      -->

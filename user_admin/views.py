@@ -99,6 +99,7 @@ def categories(request):
 
 def category(request,category_id):
     categName = Category.objects.get(pk=category_id)
+<<<<<<< HEAD
     Products = Product.objects.filter(category=category_id).values()
     m=ProductAndDiscountMemberShip.objects.filter(product__in=Products).distinct() 
     #print(m)
@@ -106,6 +107,21 @@ def category(request,category_id):
       print(M)
     
     return render(request, "category.html",{'category':categName.catName,'all_items': Products})
+=======
+    Products = Product.objects.filter(category=category_id)
+    memberships = ProductAndDiscountMemberShip.objects.all()
+    
+    # to get highest discounts perecnts
+    product_discount_pairs = [(membership.product, (membership.product_discount.discount_percent, (membership.product.price*(100-membership.product_discount.discount_percent)/100))) 
+        for membership in list(memberships) if membership.product in Products]
+    product_discount_pairs.sort(key=lambda x: x[1][0])
+    
+    products_dict = dict(product_discount_pairs)
+    other_products = set(Products) - (products_dict.keys())
+    other_products = dict((product, ('No Discount', product.price)) for product in other_products)
+    products_dict.update(other_products)
+    return render(request, "category.html",{'category':categName.catName,'all_items': Products, 'products_dict': products_dict})
+>>>>>>> c861889da1cd44892ecd9460c4aa42fe34957096
 
 def signout(request):
     try:
@@ -169,12 +185,19 @@ def cart(request):
             cartid=Cart()
             cartid.User_em=User.objects.get(pk=email)
             cartid.save()
-
+        
         ord_lin = Order_Line.objects.filter(CartId=cartid)
+
+        pro_dis = [(o.ProductID.productanddiscountmembership_set.all()) for o in ord_lin]
+        max_discount=[max([p.product_discount.discount_percent for p in pd]+[0]) for pd in pro_dis]
+        price_after=[(o.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
+        all_items=list([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
         totalprice=0
-        for ol in ord_lin :
-            totalprice += ol.Quantity * ol.price
-        return render(request, 'cart.html', {'all_items': ord_lin,'total_price':totalprice})
+        for p,ol in zip(price_after,ord_lin):
+            totalprice += ol.Quantity * p
+        cartid.total_price=totalprice
+        cartid.save()
+        return render(request, 'cart.html', {'all_items': all_items,'total_price':totalprice})
     else:
         return render(request, 'home.html')
 
@@ -185,10 +208,7 @@ def buy(request):
         email = request.session['email']
         old_cart = Cart.objects.filter(User_em=email).get(isCheckout=False)
         ord_lin = Order_Line.objects.filter(CartId=old_cart)
-        totalprice=0
-        for ol in ord_lin :
-            totalprice += ol.Quantity * ol.price
-        old_cart.total_price=totalprice
+
         old_cart.isCheckout=True
         old_cart.dt = datetime.datetime.now()
         old_cart.save()
@@ -471,8 +491,6 @@ def editDiscount(request, discount_id):
     if request.method == 'POST':  
         discount = ProductDiscount.objects.get(id=discount_id)
         form = DiscountForm(request.POST or None, instance = discount)
-        # print("aaaaaaa")
-        print(form)
         if form.is_valid():
             title2 = form['title'].value()
             form.save()
@@ -498,8 +516,7 @@ def updateDiscountProducts(request, discount_id):
     discount_products = getProductsOfDiscount(discount_id)
     other_products = list(set(all_products) - set(discount_products))
     discountsM = ProductAndDiscountMemberShip.objects.filter(product_discount_id=discount_id)
-    
-    print(discount_products)
+
     if request.method == 'POST':  
         discount = ProductAndDiscountMemberShip.objects.get(id=discount_id)
         form = CategoryForm(request.POST or None, instance=discount)
@@ -508,35 +525,53 @@ def updateDiscountProducts(request, discount_id):
             discount_percent2 = form['discount_percent'].value()
             form.save()
             messages.success(request, (title2 +' Has Been Edited!'))
-            return  redirect('.')
+            return  redirect('.' + str(discount_id))
         else:
     #         #print(form.errors.as_data())
             messages.success(request, (' this discount is exists,try agin'))
-            return redirect('.')
+            return redirect('.'+str(discount_id))
     else:       
         # discount = ProductAndDiscountMemberShip.objects.get(id=discount_id)
         return render(request, 'AdminControl/UpdateDiscountProducts.html', {'discountsM':discountsM,'discount_id':discount_id ,'all_products':all_products, 'discount_products': discount_products ,'other_products':other_products})
 
 
 def deleteDiscountMemberShip(request, memberShip_id):
-    if request.method == 'POST':  
-        ProductAndDiscountMemberShip.objects.filter(id=memberShip_id).delete()
-        messages.success(request, ('the product has been deleted from this discount'))
-        return  redirect('..')
-    else:
-        return  redirect('.')
+    discount_id = ProductAndDiscountMemberShip.objects.get(id=memberShip_id).product_discount.id
+    ProductAndDiscountMemberShip.objects.filter(id=memberShip_id).delete()
+    messages.success(request, ('the product has been deleted from this discount'))
+    return  redirect('../'+str(discount_id))
 
 def addDiscountMemberShip(request, product_id, discount_id):
     if request.method == 'POST':  
 
         product = Product.objects.get(id=product_id)
         product_discount = ProductDiscount.objects.get(id=discount_id)
-        discountM = ProductAndDiscountMemberShip(product=product, product_discount=product_discount, end_date=datetime.date)
+        discountM = ProductAndDiscountMemberShip(product=product, product_discount=product_discount)
         discountM.save()
-        # discountM.save()
-        return redirect('.')
+        return  redirect('../' + str(discount_id))
     else:
         discount = ProductDiscount.objects.get(id=discount_id)
         product = Product.objects.get(id=product_id)
 
         return render(request, 'AdminControl/addDiscountMemberShip.html', {'product': product ,'discount':discount})
+
+def addDiscount(request):
+    if request.method == 'POST':  
+        productDiscount = ProductDiscount()
+        form = DiscountForm(request.POST or None, instance=productDiscount)
+        if form.is_valid():
+            form.save()
+            messages.success(request, (productDiscount.title+' Has Been Added!'))
+            return redirect('..')
+        else:
+           # print(form.errors.as_data())
+            messages.success(request, ('make sure to fill all the fileds,try agin'))
+            return redirect('.')
+    else:
+        return render(request, 'AdminControl/AdminAddDiscount.html')
+
+def deleteDiscount(request,discount_id):
+    discount = ProductDiscount.objects.get(id=discount_id)
+    discount.delete()
+    messages.success(request, (discount.title+' Has Been Deleted!'))
+    return  redirect('..')

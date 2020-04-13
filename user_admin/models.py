@@ -91,7 +91,6 @@ class ProductDiscount(models.Model):
 class ProductAndDiscountMemberShip(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_discount =  models.ForeignKey(ProductDiscount, on_delete=models.CASCADE)
-    end_date = models.DateField()
 
     def __str__(self):
-        return str(self.product.Name) + " in discount " + str(self.product_discount.title) + " until " + str(self.end_date)
+        return str(self.product.Name) + " in discount " + str(self.product_discount.title)
