@@ -1,7 +1,5 @@
 {%extends 'base.html'%}
 
-{% load mathfilters %}
-
 {% block content %}
 
 
@@ -26,15 +24,15 @@ td {
        <th> </th>
 
     </tr>
-		{% for product, percent in products_dict.items %}
+		{% for product, percent_final in products_dict.items %}
 						
 				<tr>	
 					<td ><center>{{product.Name}}</center></td>
 					<td><center>{{product.Weight}}</center></td>
 					<td><center>{{product.price}}</center></td>
-					{%if percent != 'No Discount'%}
-						<td><center>{{percent}}%</center></td>
-						<td><center>{{ 100|sub:percent|div:100|mul:product.price}}</center></td>
+					{%if percent_final.0 != 'No Discount'%}
+						<td><center>{{percent_final.0}}%</center></td>
+						<td><center>{{percent_final.1}}</center></td>
 					{%else%}
 						<td><center>----</center></td>
 						<td><center>{{product.price}}</center></td>
