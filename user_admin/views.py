@@ -264,6 +264,7 @@ def Adminprod(request):
     return render(request, 'AdminControl/Adminprod.html', {'all_items': all_items})
 
 def adminEditP(request,products_ID):
+    
     if request.method == 'POST':  
         product = Product.objects.get(pk=products_ID)
         form = ProductForm(request.POST or None, instance=product)
@@ -277,7 +278,7 @@ def adminEditP(request,products_ID):
             messages.success(request, (product.Name+' Has Been Edited!'))
             return redirect('.')
         else:
-            print(form.errors.as_data())
+            # print(form.errors.as_data())
             return render(request, 'AdminControl/Adminprod.html')
     else:
         product = Product.objects.get(pk=products_ID)
