@@ -178,7 +178,6 @@ def cart(request):
         
         ord_lin = Order_Line.objects.filter(CartId=cartid)
 
-        print('------------------------------------------w----------------------------------------')
         pro_dis = [(o.ProductID.productanddiscountmembership_set.all()) for o in ord_lin]
         max_discount=[max([p.product_discount.discount_percent for p in pd]+[0]) for pd in pro_dis]
         price_after=[(o.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
@@ -186,10 +185,8 @@ def cart(request):
         totalprice=0
         for p,ol in zip(price_after,ord_lin):
             totalprice += ol.Quantity * p
-        print(max_discount)
-        print(price_after)
-        print (all_items)
-
+        cartid.total_price=totalprice
+        cartid.save()
         return render(request, 'cart.html', {'all_items': all_items,'total_price':totalprice})
     else:
         return render(request, 'home.html')
@@ -201,10 +198,7 @@ def buy(request):
         email = request.session['email']
         old_cart = Cart.objects.filter(User_em=email).get(isCheckout=False)
         ord_lin = Order_Line.objects.filter(CartId=old_cart)
-        totalprice=0
-        for ol in ord_lin :
-            totalprice += ol.Quantity * ol.price
-        old_cart.total_price=totalprice
+
         old_cart.isCheckout=True
         old_cart.dt = datetime.datetime.now()
         old_cart.save()

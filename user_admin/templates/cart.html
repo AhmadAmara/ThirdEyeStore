@@ -43,7 +43,7 @@
                     <td colspan = "7" ><b><center>total price is : {{total_price}}</center></b></td>
 				</tr>
 	</table>
-	<button onclick="confirmbuy()">Buy it now</button>
+	<button onclick="confirmbuy({{total_price}})">Buy it now</button>
 
 <script>
 	function confirmdel(id) {
@@ -51,8 +51,8 @@
     if(c){window.location.replace("../delol/"+id);}
 	}
 	
-	function confirmbuy() {
-	c=confirm("confirm")
+	function confirmbuy(tp) {
+	c=confirm("your cart cost is:"+ tp +" \nplease confirm ")
     if(c){ window.location.replace("../buy/");}
 	}
 </script>
