@@ -145,7 +145,8 @@ def addorder(request,Product_id):
             new_order.ProductID=product
             new_order.price=product.price
             new_order.save()
-    
+
+        messages.success(request, (product.Name+" Has Been Added To A Cart!"))
         return redirect('../category/'+catId)
     else:
         return render(request, 'loggedin.html')
@@ -183,10 +184,16 @@ def cart(request):
         price_after=[(o.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
         all_items=list([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
         totalprice=0
-        for p,ol in zip(price_after,ord_lin):
-            totalprice += ol.Quantity * p
+        ol_price=0
+        cart_info=''
+        for pa,ol,md in zip(price_after,ord_lin,max_discount):
+            ol_price = ol.Quantity * pa
+            totalprice += ol_price
+            cart_info += (f"{ol.ProductID.Name} >>> ({str(ol.ProductID.price)} * {str(100-md)}% = {str(pa)}) * {str(ol.Quantity)} = {ol_price}\n")
+        cartid.cart_orderlines = cart_info
         cartid.total_price=totalprice
         cartid.save()
+
         return render(request, 'cart.html', {'all_items': all_items,'total_price':totalprice})
     else:
         return render(request, 'home.html')
@@ -225,6 +232,7 @@ def editqty(request,ol_id):
             ol = Order_Line.objects.get(pk=ol_id)
             ol.Quantity=quantity
             ol.save();
+            messages.success(request, (ol.ProductID.Name+" Quantity's Has Been Updated!"))
         else:
             print ('------------------------------else------------------------------')
 
@@ -236,13 +244,13 @@ def history(request):
 
     if request.session.get('logged_in'):   
         title='this is history'
-        carts = Cart.objects.filter(User_em=request.session['email']).filter(isCheckout=True)
-        ols=[]
-        for c in carts : 
-            ol=Order_Line.objects.filter(CartId=c)
-            ols.append((c,ol))
-        ols.reverse()
-        return render(request, 'history.html', {'title':title,'ols':ols})
+        carts = Cart.objects.filter(User_em=request.session['email']).filter(isCheckout=True).order_by('dt').reverse()
+        # ols=[]
+        # for c in carts : 
+        #     ol=Order_Line.objects.filter(CartId=c)
+        #     ols.append((c,ol))
+        # ols.reverse()
+        return render(request, 'history.html', {'title':title,'carts':carts})
     else:
         return render(request, 'home.html')
 
@@ -264,7 +272,6 @@ def Adminprod(request):
     return render(request, 'AdminControl/Adminprod.html', {'all_items': all_items})
 
 def adminEditP(request,products_ID):
-    
     if request.method == 'POST':  
         product = Product.objects.get(pk=products_ID)
         form = ProductForm(request.POST or None, instance=product)
@@ -278,7 +285,7 @@ def adminEditP(request,products_ID):
             messages.success(request, (product.Name+' Has Been Edited!'))
             return redirect('.')
         else:
-            # print(form.errors.as_data())
+            print(form.errors.as_data())
             return render(request, 'AdminControl/Adminprod.html')
     else:
         product = Product.objects.get(pk=products_ID)
@@ -342,7 +349,7 @@ def adminaddP(request):
     if request.method == 'POST':
         product=Product()
         form = ProductForm(request.POST or None, instance=product)
-        print("Iam request.POST",request.POST)
+        # print("Iam request.POST",request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, (product.Name+' Has Been Added!'))
@@ -376,22 +383,22 @@ def Admincat(request):
 
 
 def adminEditcat(request,Category_ID):
-    print("Category_ID",Category_ID)
+    # print("Category_ID",Category_ID)
     Categories = Category.objects.values('catName')
     if request.method == 'POST':  
         category = Category.objects.get(pk=Category_ID)
         catName=category.catName
-        print('category befor',category)
+        # print('category befor',category)
         form = CategoryForm(request.POST or None, instance=category)
         if form.is_valid():
            # catName2=form['catName'].value()
 
             form.save()
-            print('category after',category)
+            # print('category after',category)
             messages.success(request, (catName+' Has Been Edited!'))
             return  redirect('.')
         else:
-            #print(form.errors.as_data())
+            print(form.errors.as_data())
             messages.success(request, (' this category is exists,try agin'))
             return redirect('.')
     else:        
@@ -408,7 +415,7 @@ def adminaddcat(request):
             messages.success(request, (category.catName+' Has Been Added!'))
             return redirect('..')
         else:
-           # print(form.errors.as_data())
+            print(form.errors.as_data())
             messages.success(request, (' this category is exists,try agin'))
             return redirect('.')
     else:
@@ -433,7 +440,7 @@ def adminEditUser(request,User_ID):
             messages.success(request, (str(user.email)+' Has Been Edited!'))
             return  redirect('.')
         else:
-            #print(form.errors.as_data())
+            print(form.errors.as_data())
             messages.success(request, (' this user is exists,try agin'))
             return redirect('.')
     else:        
@@ -465,7 +472,7 @@ def adminadduser(request):
             return redirect('..')
 
         else:
-            #print(form.errors.as_data())
+            print(form.errors.as_data())
             messages.success(request, ('Error,try agin'))
             return redirect('.')
    else:        
@@ -488,7 +495,7 @@ def editDiscount(request, discount_id):
             messages.success(request, (title2 +' Has Been Edited!'))
             return  redirect('.')
         else:
-    #         #print(form.errors.as_data())
+            print(form.errors.as_data())
             messages.success(request, ('edit failed, try agin'))
             return redirect('.')
     else:       
@@ -518,7 +525,7 @@ def updateDiscountProducts(request, discount_id):
             messages.success(request, (title2 +' Has Been Edited!'))
             return  redirect('.' + str(discount_id))
         else:
-    #         #print(form.errors.as_data())
+            print(form.errors.as_data())
             messages.success(request, (' this discount is exists,try agin'))
             return redirect('.'+str(discount_id))
     else:       
@@ -555,7 +562,7 @@ def addDiscount(request):
             messages.success(request, (productDiscount.title+' Has Been Added!'))
             return redirect('..')
         else:
-           # print(form.errors.as_data())
+            print(form.errors.as_data())
             messages.success(request, ('make sure to fill all the fileds,try agin'))
             return redirect('.')
     else:

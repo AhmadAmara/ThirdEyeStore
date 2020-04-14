@@ -36,13 +36,12 @@ class Product(models.Model):
 
 class Cart(models.Model):
     User_em = models.ForeignKey(User,on_delete=models.CASCADE)
-    dt=models.DateTimeField(auto_now=True)
+    dt=models.DateTimeField(auto_now_add=True)
     total_price = models.FloatField(default=0)
     isCheckout = models.BooleanField(default=False)
+    cart_orderlines = models.CharField(max_length = 2000,default='')
 
-    class Meta:
-        ordering = ['dt']
-        
+
     def __str__(self):
         return str(self.User_em) + ' | ' + str(self.dt)+ ' | ' + str(self.total_price)+ ' | ' + str(self.isCheckout)
 
