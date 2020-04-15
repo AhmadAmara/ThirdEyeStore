@@ -1,0 +1,26 @@
+
+
+{%extends 'base.html'%}
+
+
+{% block content %}
+
+
+<h1>This is the product</h1>
+{{product}}
+<br>
+                                                           <img src="{{ product.Image.url }}" alt="{{ product.Image.name }}"width="300" height="300">
+
+                    <!-- <img src="..\static\upload\Image\product-icon-png-2.png" class="img-responsive" style="width: 100%; float: left; margin-right: 10px;" /> 
+-->                 
+                    {%if product.Quantity%}
+					<td><form name="buyform"
+					   action = "{% url 'addorder' product.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<input type="submit" value="Add to Cart" >
+                    </form></td>
+					
+					{%else%} <td><button type="button" disabled>Currently Unavailable</button></td>
+					{% endif %}
+{% endblock content %}

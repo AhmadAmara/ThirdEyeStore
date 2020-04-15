@@ -1,16 +1,36 @@
 {%extends 'base.html'%}
 
 {% block content %}
-
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
 
 {% if products_dict %}
 <style>
-td {
-	width:25%;
+td,th {
 	text-align: center;
 }
+
 </style>
-<h1>This is {{category}}</h1>
+
+<h1>This is {{category.catName}}</h1>
+
+{% if messages %}
+	{% for message in messages %}
+		<div class="alert alert-success alert-dismissible fade show">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+	                <strong>Success! </strong>{{ message }}
+  		</div>
+	{% endfor%}
+{% endif %}
+
+
 
 
 	<table class="table table-bordered">
@@ -21,13 +41,13 @@ td {
 		<th>discount percent</th>
 		<th>final price</th>
 
-       <th> </th>
 
     </tr>
 		{% for product, percent_final in products_dict.items %}
 						
-				<tr>	
-					<td ><center>{{product.Name}}</center></td>
+				<tr>
+				     <td ><center><a class="nav-link" href="{% url 'ShowProduct' category_id product.id %}">{{product.Name}}</a></center></td>	
+					<!--<td ><center>{{product.Name}}</center></td>-->
 					<td><center>{{product.Weight}}</center></td>
 					<td><center>{{product.price}}</center></td>
 					{%if percent_final.0 != 'No Discount'%}
@@ -37,6 +57,7 @@ td {
 						<td><center>----</center></td>
 						<td><center>{{product.price}}</center></td>
 					{% endif %}
+					<!--
 					{%if product.Quantity%}
 					<td><form name="buyform"
 					   action = "{% url 'addorder' product.id %}" 
@@ -47,6 +68,7 @@ td {
 					
 					{%else%} <td><button type="button" disabled>Currently Unavailable</button></td>
 					{% endif %}
+					-->
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</tr>

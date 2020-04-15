@@ -1,9 +1,11 @@
 from django.db import models
-from .fields import IntegerRangeField
+from user_admin.fields import IntegerRangeField
 
 class Category(models.Model):
     catName = models.CharField(max_length = 200,unique=True)
     isAvtive = models.BooleanField(default=True)
+    Image=models.ImageField(upload_to='Categorys',default='Categorys/2426188-200.png') 
+
 
     def __str__(self):
         return self.catName + ' | ' + str(self.isAvtive)
@@ -27,6 +29,7 @@ class Product(models.Model):
     Weight = models.FloatField()
     price = models.FloatField()
     Quantity = models.IntegerField(default=0)
+    Image=models.ImageField(upload_to='Products',default='Products/product-icon-png-2.png') 
     
     def __str__(self):
         return self.Name +' | ' +str(self.category) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) +' | ' + str(self.Weight)
@@ -36,13 +39,12 @@ class Product(models.Model):
 
 class Cart(models.Model):
     User_em = models.ForeignKey(User,on_delete=models.CASCADE)
-    dt=models.DateTimeField(auto_now=True)
+    dt=models.DateTimeField(auto_now_add=True)
     total_price = models.FloatField(default=0)
     isCheckout = models.BooleanField(default=False)
+    cart_orderlines = models.CharField(max_length = 2000,default='')
 
-    class Meta:
-        ordering = ['dt']
-        
+
     def __str__(self):
         return str(self.User_em) + ' | ' + str(self.dt)+ ' | ' + str(self.total_price)+ ' | ' + str(self.isCheckout)
 

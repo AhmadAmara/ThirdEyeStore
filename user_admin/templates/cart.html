@@ -2,9 +2,27 @@
 {%extends 'base.html'%}
 
 {% block content %}
-
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
 
 <h1>Cart</h1>
+
+
+{% if messages %}
+	{% for message in messages %}
+		<div class="alert alert-success alert-dismissible fade show">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+	                <strong>Success! </strong>{{ message }}
+  		</div>
+	{% endfor%}
+{% endif %}
 
 {% if all_items %}
 	<table class="table table-bordered">
@@ -16,7 +34,7 @@
 					<th><center><b>Quantity</b></center></th>
 					<th>discount percent</th>
 					<th>final price</th>
-					<th width="10%"/>
+					<th />
 
   				</tr>
 
@@ -25,7 +43,7 @@
                 	
 					<td><center>{{things.ProductID.Name}}</center></td>
 					<td><center>{{things.ProductID.category.catName}}</center></td>
-					<td><center>{{things.price}}</center></td>
+					<td><center>{{things.ProductID.price}}</center></td>
                     <td><center>
 						<form method="POST" action="{% url 'editqty' things.id %}"> {%csrf_token%}
   						<input  name="quantity" value="{{things.Quantity}}" type="number" min="1" max="10" style="width:50px; text-align:center">

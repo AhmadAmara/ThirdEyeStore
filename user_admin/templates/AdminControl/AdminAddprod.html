@@ -13,7 +13,7 @@ td {
 <center><h1>This is Admin Add Product</h1></center>
 
 	{% if Categories %}
-	<form class="form-inline my-2 my-lg-0" method="POST">
+	<form class="form-inline my-2 my-lg-0" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
@@ -22,7 +22,8 @@ td {
        <th>Weight</th>
        <th>price</th>
        <th>Quantity</th>
-  
+         <th>Image</th>
+
        <tr>
 	   <td>
       <input class="form-control mr-sm-2" type="search"  aria-label="Search" name="Name">
@@ -45,6 +46,10 @@ td {
       <td>
       <input class="form-control mr-sm-2" type="search"  aria-label="Search" name="Quantity">
       </td>
+         <td>
+        <input type="file" id="Image"  name="Image" accept="image/*">
+        
+      </td>   
     </tr>
       </table>
       <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Add product</button>

@@ -11,6 +11,7 @@ urlpatterns = [
   path('categories/', views.categories, name="categories"),
   path('signup/', views.signup, name="signup"),
   path('category/<category_id>', views.category, name="category"),
+  path('category/<category_id>/<product_id>', views.ShowProduct, name="ShowProduct"),
   path('addorder/<Product_id>', views.addorder, name="addorder"),
   path('delol/<ol_id>', views.delol, name="delol"),
   path('buy/', views.buy, name="buy"),
@@ -39,6 +40,7 @@ urlpatterns = [
 
 
 ]
+
 
   ##path('ControlPanel/Categories/Delet/<Category_ID>', views.adminDeletcat, name="adminDeletcat"),
   ###
