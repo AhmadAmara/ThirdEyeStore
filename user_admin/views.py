@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+##########
 
 def home(request):
     return render(request, 'home.html')
@@ -52,6 +53,7 @@ def login(request):
                 request.session['logged_in'] = True
                 request.session['email']=d['email']
                 request.session['typ']=d['typ']
+                request.session['name'] = request.session['email'].split('@')[0]
                 return render(request,'home.html',email_value[0])
             
         else:
@@ -111,7 +113,19 @@ def category(request,category_id):
     other_products = set(Products) - (products_dict.keys())
     other_products = dict((product, ('No Discount', product.price)) for product in other_products)
     products_dict.update(other_products)
-    return render(request, "category.html",{'category':categName.catName,'all_items': Products, 'products_dict': products_dict})
+    return render(request, "category.html",{'category_id':category_id,'category':categName,'all_items': Products, 'products_dict': products_dict})
+
+
+def ShowProduct(request,category_id,product_id):
+    product = Product.objects.get(pk=product_id)
+    return render(request, "product.html",{'product':product,'category_id': category_id})
+
+
+
+
+
+
+
 
 def signout(request):
     try:
@@ -297,7 +311,7 @@ def adminEditP(request,products_ID):
 def adminaddP(request):
     if request.method == 'POST':
         product=Product()
-        form = ProductForm(request.POST or None, instance=product)
+        form = ProductForm(request.POST or None,request.FILES, instance=product)
         if form.is_valid():
             form.save()
             messages.success(request, (product.Name+' Has Been Added!'))
@@ -308,31 +322,38 @@ def adminaddP(request):
             return redirect('..')
     else:
         Categories = Category.objects.values('catName')
-        return render(request, 'AdminControl/AdminAddprod.html', {'Categories':Categories})
+        form=ProductForm()
+        return render(request, 'AdminControl/AdminAddprod.html', {'form':form,'Categories':Categories})
 
 
 def adminDeletP(request,products_ID):
     product = Product.objects.get(pk=products_ID)
     product.delete()
-    cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-    ord_lin = Order_Line.objects.filter(CartId=cartid)
-    for order in ord_lin :
-        if order.ProductID.id==products_ID:
-           del order
+    try:
+       cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+       ord_lin = Order_Line.objects.filter(CartId=cartid)
+       for order in ord_lin :
+           if order.ProductID.id==products_ID:
+              del order
+    except:
+        print("no cart")
     messages.success(request, (product.Name+' Has Been Deleted!'))
     return  redirect('..')
 
 def adminEditP(request,products_ID):
     if request.method == 'POST':  
         product = Product.objects.get(pk=products_ID)
-        form = ProductForm(request.POST or None, instance=product)
+        form = ProductForm(request.POST or None,request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-            ord_lin = Order_Line.objects.filter(CartId=cartid)
-            for order in ord_lin :
-                order.price=form['price'].value()
-                order.save()
+            try:
+               cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+               ord_lin = Order_Line.objects.filter(CartId=cartid)
+               for order in ord_lin :
+                   order.price=form['price'].value()
+                   order.save()
+            except:
+                print("no cart")
             messages.success(request, (product.Name+' Has Been Edited!'))
             return redirect('.')
         else:
@@ -348,10 +369,13 @@ def adminEditP(request,products_ID):
 def adminaddP(request):
     if request.method == 'POST':
         product=Product()
-        form = ProductForm(request.POST or None, instance=product)
+        form = ProductForm(request.POST or None,request.FILES, instance=product)
         # print("Iam request.POST",request.POST)
         if form.is_valid():
             form.save()
+            img=form['Image'].value()
+            print('kokokoko')
+            print("Iam img",img)
             messages.success(request, (product.Name+' Has Been Added!'))
             return redirect('..')
         else:
@@ -367,11 +391,14 @@ def adminaddP(request):
 def adminDeletP(request,products_ID):
     product = Product.objects.get(pk=products_ID)
     product.delete()
-    cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-    ord_lin = Order_Line.objects.filter(CartId=cartid)
-    for order in ord_lin :
-        if order.ProductID.id==products_ID:
-           del order
+    try:
+       cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
+       ord_lin = Order_Line.objects.filter(CartId=cartid)
+       for order in ord_lin :
+           if order.ProductID.id==products_ID:
+              del order
+    except:
+        print("no cart")
     messages.success(request, (product.Name+' Has Been Deleted!'))
     return  redirect('..')
 
@@ -389,9 +416,9 @@ def adminEditcat(request,Category_ID):
         category = Category.objects.get(pk=Category_ID)
         catName=category.catName
         # print('category befor',category)
-        form = CategoryForm(request.POST or None, instance=category)
+        form = CategoryForm(request.POST or None,request.FILES,instance=category)
         if form.is_valid():
-           # catName2=form['catName'].value()
+ 
 
             form.save()
             # print('category after',category)
@@ -409,7 +436,7 @@ def adminEditcat(request,Category_ID):
 def adminaddcat(request):
     if request.method == 'POST':  
         category = Category()
-        form = CategoryForm(request.POST or None, instance=category)
+        form = CategoryForm(request.POST or None,request.FILES, instance=category)
         if form.is_valid():
             form.save()
             messages.success(request, (category.catName+' Has Been Added!'))
@@ -472,7 +499,7 @@ def adminadduser(request):
             return redirect('..')
 
         else:
-            print(form.errors.as_data())
+            print(MySignupForm.errors.as_data())
             messages.success(request, ('Error,try agin'))
             return redirect('.')
    else:        

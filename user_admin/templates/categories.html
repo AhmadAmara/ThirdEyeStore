@@ -10,8 +10,14 @@
 	<table class="table table-bordered">
 		{% for things in all_items %}
 				<tr>
+				    
 				      {% if things.isAvtive %}
-					  <td><center><a class="nav-link" href="{% url 'category' things.id %}">{{things.catName }}</a></center></td>
+					  <td><center>
+					  <a class="nav-link" href="{% url 'category' things.id %}">
+					  <img src="{{ things.Image.url }}" width="300" height="300">
+					  <br>
+					  {{things.catName }}</a>
+					  </center></td>
 					  {% endif %}
 				</tr>
 			

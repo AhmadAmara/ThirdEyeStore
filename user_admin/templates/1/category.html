@@ -9,51 +9,16 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-	<style>
-section {
-    display: inline-block;
-    width: 340px;
-    height: 250px;
-    margin: 5px 5px;
-    border: 1px solid #333;
-    border-radius: 5px;
-    background: white;
-}
-
-img {
-    width: 150px;
-    height: 225px;
-    float: right;
-    margin: 5px;
-}
-
-h3, h5 {
-    margin: 19px 5px;
-}
-
-span {
-    display: block;
-    margin: 5px;
-    font-size: 1.2em;
-}
-
-section button {
-    margin: 5px;
-}
-
-form {
-    width: 90%;
-    margin: 20px auto;
-}
-
-.discountp{
-	display: inline;
-}
-
-	</style>
 </head>
 
 {% if products_dict %}
+<style>
+td,th {
+	text-align: center;
+}
+
+</style>
+
 <h1>This is {{category.catName}}</h1>
 
 {% if messages %}
@@ -63,42 +28,52 @@ form {
 	                <strong>Success! </strong>{{ message }}
   		</div>
 	{% endfor%}
-
-
 {% endif %}
-		{% for product, percent_final in products_dict.items %}
-			<section>
-			  <!-- <a class="nav-link" href="{% url  'ShowProduct' category_id product.id  %}">
-					  <img src="{{ product.Image.url }}" >
-					  <br>
-					 </a>
-					 -->
-                	  <img src="{{ product.Image.url }}" >
 
-					<h3><i>{{product.Name}}</i></h3>
-					<h5>{{product.Weight}} g</h5>
-					
+
+
+
+	<table class="table table-bordered">
+	<tr style="background:#4285F4;color:#eee;">
+       <th>Name</th>
+       <th>Weight</th>
+       <th>price</th>
+		<th>discount percent</th>
+		<th>final price</th>
+
+
+    </tr>
+		{% for product, percent_final in products_dict.items %}
+						
+				<tr>
+				     <td ><center><a class="nav-link" href="{% url 'ShowProduct' category_id product.id %}">{{product.Name}}</a></center></td>	
+					<!--<td ><center>{{product.Name}}</center></td>-->
+					<td><center>{{product.Weight}}</center></td>
+					<td><center>{{product.price}}</center></td>
 					{%if percent_final.0 != 'No Discount'%}
-						<h5 class="discountp"><del>{{product.price}}</del></h5>
-						<h5 class="discountp">{{percent_final.1}}&#8362;</h5>
+						<td><center>{{percent_final.0}}%</center></td>
+						<td><center>{{percent_final.1}}</center></td>
 					{%else%}
-						<h5>{{product.price}}&#8362;</h5>
+						<td><center>----</center></td>
+						<td><center>{{product.price}}</center></td>
 					{% endif %}
+					<!--
 					{%if product.Quantity%}
-					<form name="buyform"
+					<td><form name="buyform"
 					   action = "{% url 'addorder' product.id %}" 
                        method = "POST">
 					   {% csrf_token %}
                 	<input type="submit" value="Add to Cart" >
-                    </form>
+                    </form></td>
 					
-					{%else%} <button type="button" disabled>Currently Unavailable</button>
+					{%else%} <td><button type="button" disabled>Currently Unavailable</button></td>
 					{% endif %}
+					-->
 					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
-				</section>
+				</tr>
 			
 		{% endfor %}
+	</table>
 {% endif %}
 {% endblock content %}
-

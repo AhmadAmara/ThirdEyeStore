@@ -13,7 +13,7 @@ td {
 <center><h1>This is Admin Edit Product</h1></center>
 
 	{% if product %}
-	<form class="form-inline my-2 my-lg-0" method="POST">
+	<form class="form-inline my-2 my-lg-0" method="POST"  enctype="multipart/form-data">
       {% csrf_token %}
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
@@ -22,6 +22,7 @@ td {
        <th>Weight</th>
        <th>price</th>
        <th>Quantity</th>
+       <th>Image</th>
   
        <tr>
 	   <td>
@@ -50,6 +51,11 @@ td {
        <td>
       <input class="form-control mr-sm-2" type="search" placeholder="{{ product.Quantity }}" 
       value="{{ product.Quantity }}" aria-label="Search" name="Quantity">
+      </td>
+            <td>
+        <img src="{{ product.Image.url }}" width="50" height="50">
+        <input type="file" id="Image"  name="Image" accept="image/*">
+        
       </td>
     </tr>
       </table>
