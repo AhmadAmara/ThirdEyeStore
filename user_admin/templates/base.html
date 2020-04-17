@@ -89,11 +89,11 @@ WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="a
   </div>
   <!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
 {% if request.session.typ == 'admin'%}
-    welcome {{request.session.name}} (admin)
+   <tt> welcome {{request.session.name}} (admin)</tt>
 {% elif request.session.typ == 'customer'%} 
-    welcome {{request.session.name}}
+   <tt> welcome {{request.session.name}}</tt>
 {% else %}
-    welcome visitor
+   <tt> welcome visitor</tt>
 {% endif %}
 <!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
         <footer style="padding:10px; background:#343a40; color:white">

@@ -95,8 +95,12 @@ def welcome(request):
 
 
 def categories(request):
-    all_items = Category.objects.all()
-    return render(request, "categories.html", {'all_items': all_items})
+    cats = Category.objects.all()
+    for c in cats:
+        c.isAvtive=c.product_set.count()>0
+        c.save()
+
+    return render(request, "categories.html", {'all_items': cats})
 
 
 def category(request,category_id):
@@ -405,8 +409,11 @@ def adminDeletP(request,products_ID):
 
 
 def Admincat(request):
-    all_items = Category.objects.all()
-    return render(request, 'AdminControl/Admincat.html', {'all_items': all_items})
+    Categories = Category.objects.all()
+    for c in Categories:
+        c.isAvtive=c.product_set.count()>0
+        c.save()
+    return render(request, 'AdminControl/Admincat.html', {'all_items': Categories})
 
 
 def adminEditcat(request,Category_ID):

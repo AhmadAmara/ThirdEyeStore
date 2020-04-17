@@ -3,25 +3,51 @@
 
 {% block content %}
 
+<style>
+.category{
+	border-bottom: 2px solid grey;
+	background-color: lightgrey;
+	
+}
 
+.category:hover{
+	border: 2px solid black;
+	background-color: grey;
+}
+
+.category h1,img{
+	display: inline-block;
+}
+
+.category img{
+	width:25%;
+	height:200px;
+}
+.category h1{
+	width:65%;
+	size:50px;
+	color : white;
+	text-shadow: 0px 0px 15px black;
+	text-align: center;
+}
+
+</style>
 <h1>This is categories</h1>
 
 {% if all_items %}
-	<table class="table table-bordered">
 		{% for things in all_items %}
-				<tr>
-				    
+		
 				      {% if things.isAvtive %}
-					  <td><center>
+					  <div class="category">
 					  <a class="nav-link" href="{% url 'category' things.id %}">
-					  <img src="{{ things.Image.url }}" width="300" height="300">
-					  <br>
-					  {{things.catName }}</a>
-					  </center></td>
+					  <img src="{{ things.Image.url }}" >
+					  
+					  <h1>{{things.catName }}</h1>
+					  
+					  </a>
+					  </div>
 					  {% endif %}
-				</tr>
 			
 		{% endfor %}
-	</table>
 {% endif %}
 {% endblock content %}
