@@ -104,7 +104,8 @@ def category(request,category_id):
     memberships = ProductAndDiscountMemberShip.objects.all()
     
     # to get highest discounts perecnts
-    product_discount_pairs = [(membership.product, (membership.product_discount.discount_percent, (membership.product.price*(100-membership.product_discount.discount_percent)/100))) 
+    product_discount_pairs = [(membership.product, (membership.product_discount.discount_percent,
+     (membership.product.price*(100-membership.product_discount.discount_percent)/100))) 
         for membership in list(memberships) if membership.product in Products]
     product_discount_pairs.sort(key=lambda x: x[1][0])
     
@@ -112,7 +113,8 @@ def category(request,category_id):
     other_products = set(Products) - (products_dict.keys())
     other_products = dict((product, ('No Discount', product.price)) for product in other_products)
     products_dict.update(other_products)
-    return render(request, "category.html",{'category_id':category_id,'category':categName,'all_items': Products, 'products_dict': products_dict})
+    return render(request, "category.html",{'category_id':category_id,'category':categName,
+    'all_items': Products, 'products_dict': products_dict})
 
 
 def ShowProduct(request,category_id,product_id):

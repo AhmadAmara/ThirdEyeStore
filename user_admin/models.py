@@ -32,7 +32,8 @@ class Product(models.Model):
     Image=models.ImageField(upload_to='Products',default='Products/product-icon-png-2.png') 
     
     def __str__(self):
-        return self.Name +' | ' +str(self.category) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) +' | ' + str(self.Weight)
+        return self.Name +' | ' +str(self.category)
+        + ' | ' +str(self.price) + ' | ' +str(self.Quantity) +' | ' + str(self.Weight)
 
 
 
