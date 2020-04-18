@@ -3,13 +3,6 @@ from .models import Product
 from .models import Category
 from .models import User, ProductDiscount, ProductAndDiscountMemberShip
 
-class StudentForm(forms.Form):  
-    firstname = forms.CharField(label="Enter first name",max_length=50)  
-    lastname  = forms.CharField(label="Enter last name", max_length = 10)  
-    email     = forms.EmailField(label="Enter Email")  
-    file      = forms.FileField() # for creating file input  
-    
-    
 class LoginForm(forms.Form):
    email    = forms.EmailField(label="Enter Email") 
    password = forms.CharField(widget = forms.PasswordInput())

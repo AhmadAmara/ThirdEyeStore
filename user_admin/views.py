@@ -3,7 +3,7 @@ import datetime
 from django.http import HttpResponse
 ##--
 from user_admin.functions import handle_uploaded_file  
-from user_admin.form import StudentForm,UserForm ,Editqtyform
+from user_admin.form import UserForm ,Editqtyform
 from user_admin.form import LoginForm ,SignUpForm,ProductForm,CategoryForm, DiscountForm
 from django.shortcuts import redirect
 from .models import User,Product,Order_Line,Cart
