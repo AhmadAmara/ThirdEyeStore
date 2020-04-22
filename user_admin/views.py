@@ -16,21 +16,20 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 ##########
 
+### mongodb ###
+import pymongo
+client = pymongo.MongoClient('mongodb://localhost:27017/')
+users_db = client['users']
+acoounts_colec = users_db['users_accounts']
+
+
+
+
 def home(request):
     return render(request, 'home.html')
 
 def about(request):
     return render(request, "about.html")
-
-def index(request):  
-    if request.method == 'POST':  
-        student = StudentForm(request.POST, request.FILES)  
-        if student.is_valid():  
-            handle_uploaded_file(request.FILES['file'])  
-            return HttpResponse("File uploaded successfuly")  
-    else:  
-        student = StudentForm()  
-        return render(request,"index.html",{'form':student})
 
 
 def login(request):  
@@ -40,21 +39,24 @@ def login(request):
         if MyLoginForm.is_valid():
             email = MyLoginForm.cleaned_data['email']
             password = MyLoginForm.cleaned_data['password']
+            # email_value = User.objects.filter(email=email).values()
 
-            email_value = User.objects.filter(email=email).values()
-            if(not email_value):
+            #check if exist
+            document = acoounts_colec.find_one( {'_id': email}) 
+
+            if(not document):
                 return render(request, "signup.html")
             
-            elif(email_value[0]['password'] != password):
+            elif(document['password'] != password):
                 return render(request, 'loggedin.html', {"email" : "bad user name","password":"bad password"})        
 
             else:
-                d=dict(email_value[0])
+                d = document
                 request.session['logged_in'] = True
-                request.session['email']=d['email']
+                request.session['email'] = d['_id']
                 request.session['typ']=d['typ']
                 request.session['name'] = request.session['email'].split('@')[0]
-                return render(request,'home.html',email_value[0])
+                return render(request,'home.html',document)
             
         else:
             return render(request, 'loggedin.html', {"email" : "bad user name","password":"bad password"})        
@@ -69,18 +71,21 @@ def signup(request):
             email = MySignupForm.cleaned_data['email']
             password = MySignupForm.cleaned_data['password']
 
-            email_value = User.objects.filter(email=email).values()
-            
-            if(email_value):
+            # email_value = User.objects.filter(email=email).values()
+            user_document = acoounts_colec.find_one( {'_id': email})               
+
+            if(user_document):
                 return render(request, "signup.html", {'email': email ,'bademail':'bademail', 'message': 'this email already signedup'})
 
-            new_user = User()
-            new_user.email = email
-            new_user.password = password
-            new_user.save()
-            c=Cart()
-            c.User_em=new_user
-            c.save()
+            # new_user = User()
+            # new_user.email = email
+            # new_user.password = password
+            # new_user.save()
+            user_dict = {'_id':email, 'password': password, 'typ':'customer', 'name': 'sigupName'}
+            acoounts_colec.insert_one(user_dict)
+            c = Cart()
+            c.User_em = email
+            # c.save()
 
             return render(request, "loggedin.html")
         else:
@@ -144,13 +149,16 @@ def addorder(request,Product_id):
     if request.session.get('logged_in'):
         product = Product.objects.get(pk=Product_id)
         catId=str(product.category.id)
-        user = User.objects.get(pk=request.session['email'])
+        # user = User.objects.get(pk=request.session['email'])
+        user_document = acoounts_colec.find_one( {'_id': request.session['email']})               
+
         try:
            cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
         except :
             email = request.session['email']
             cartid=Cart()
-            cartid.User_em=User.objects.get(pk=email)
+            # cartid.User_em= User.objects.get(pk=email)
+            cartid.User_em = email
             cartid.save()
         ol=Order_Line.objects.filter(CartId=cartid).filter(ProductID=product)
         if (ol):
@@ -192,7 +200,9 @@ def cart(request):
         except :
             email = request.session['email']
             cartid=Cart()
-            cartid.User_em=User.objects.get(pk=email)
+            # cartid.User_em=User.objects.get(pk=email)
+            cartid.User_em = email
+
             cartid.save()
         
         ord_lin = Order_Line.objects.filter(CartId=cartid)
@@ -224,14 +234,16 @@ def buy(request):
         old_cart = Cart.objects.filter(User_em=email).get(isCheckout=False)
         ord_lin = Order_Line.objects.filter(CartId=old_cart)
 
-        old_cart.isCheckout=True
-        old_cart.dt = datetime.datetime.now()
+        old_cart.isCheckout = True
+        # old_cart.dt = datetime.datetime.now()
         old_cart.save()
-        
+        # print(old_cart.isCheckout)
 
 
         new_cart=Cart()
-        new_cart.User_em=User.objects.get(pk=email)
+        new_cart.User_em = email
+        new_cart.isCheckout = False
+        new_cart.dt = datetime.datetime.now()
         new_cart.save()
 
         return redirect('../cart/')
@@ -249,7 +261,7 @@ def editqty(request,ol_id):
 
             ol = Order_Line.objects.get(pk=ol_id)
             ol.Quantity=quantity
-            ol.save();
+            ol.save()
             messages.success(request, (ol.ProductID.Name+" Quantity's Has Been Updated!"))
         else:
             print ('------------------------------else------------------------------')

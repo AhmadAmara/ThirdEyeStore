@@ -38,7 +38,8 @@ class Product(models.Model):
 
 
 class Cart(models.Model):
-    User_em = models.ForeignKey(User,on_delete=models.CASCADE)
+    # User_em = models.ForeignKey(User, on_delete=models.CASCADE)
+    User_em = models.EmailField(primary_key=True, max_length = 200, unique=True)
     dt=models.DateTimeField(auto_now_add=True)
     total_price = models.FloatField(default=0)
     isCheckout = models.BooleanField(default=False)
