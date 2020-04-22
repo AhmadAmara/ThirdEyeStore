@@ -136,6 +136,7 @@ def signout(request):
         del request.session['logged_in']
         del request.session['email']
         del request.session['typ']
+        del request.session['name']
     except KeyError:
         pass
     return render(request, "home.html")
@@ -152,16 +153,15 @@ def addorder(request,Product_id):
             cartid=Cart()
             cartid.User_em=User.objects.get(pk=email)
             cartid.save()
-        ol=Order_Line.objects.filter(CartId=cartid).filter(ProductID=product)
-        if (ol):
+        try:
             ol=Order_Line.objects.filter(CartId=cartid).get(ProductID=product)
             ol.Quantity=ol.Quantity+1
             ol.save()
-        else :
+        except :
             new_order=Order_Line()
             new_order.CartId=cartid
             new_order.ProductID=product
-            new_order.price=product.price
+            new_order.price=product.price # to_delete
             new_order.save()
 
         messages.success(request, (product.Name+" Has Been Added To A Cart!"))
@@ -200,15 +200,10 @@ def cart(request):
         pro_dis = [(o.ProductID.productanddiscountmembership_set.all()) for o in ord_lin]
         max_discount=[max([p.product_discount.discount_percent for p in pd]+[0]) for pd in pro_dis]
         price_after=[(o.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
-        all_items=list([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
+        all_items=([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
         totalprice=0
-        ol_price=0
-        cart_info=''
-        for pa,ol,md in zip(price_after,ord_lin,max_discount):
-            ol_price = ol.Quantity * pa
-            totalprice += ol_price
-            cart_info += (f"{ol.ProductID.Name} >>> ({str(ol.ProductID.price)} * {str(100-md)}% = {str(pa)}) * {str(ol.Quantity)} = {ol_price}\n")
-        cartid.cart_orderlines = cart_info
+        for pa,ol in zip(price_after,ord_lin):
+            totalprice = ol.Quantity * pa
         cartid.total_price=totalprice
         cartid.save()
 
@@ -219,20 +214,36 @@ def cart(request):
 def buy(request):
     
     if request.session.get('logged_in'):
-        
+    
         email = request.session['email']
         old_cart = Cart.objects.filter(User_em=email).get(isCheckout=False)
         ord_lin = Order_Line.objects.filter(CartId=old_cart)
+        if(ord_lin):
+            pro_dis = [(o.ProductID.productanddiscountmembership_set.all()) for o in ord_lin]
+            max_discount=[max([p.product_discount.discount_percent for p in pd]+[0]) for pd in pro_dis]
+            price_after=[(o.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
+            all_items=list([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
+            totalprice=0
+            ol_price=0
+            cart_info=''
+            for pa,ol,md in zip(price_after,ord_lin,max_discount):
+                ol_price = ol.Quantity * pa
+                totalprice += ol_price
+                cart_info += (f"{ol.ProductID.Name} >>> ({str(ol.ProductID.price)} * {str(100-md)}% = {str(pa)}) * {str(ol.Quantity)} = {ol_price}\n")
+            old_cart.cart_orderlines = cart_info
+            old_cart.total_price=totalprice
+            old_cart.save()
 
-        old_cart.isCheckout=True
-        old_cart.dt = datetime.datetime.now()
-        old_cart.save()
+
+            old_cart.isCheckout=True
+            old_cart.dt = datetime.datetime.now()
+            old_cart.save()
         
 
 
-        new_cart=Cart()
-        new_cart.User_em=User.objects.get(pk=email)
-        new_cart.save()
+            new_cart=Cart()
+            new_cart.User_em=User.objects.get(pk=email)
+            new_cart.save()
 
         return redirect('../cart/')
     else:
@@ -263,11 +274,6 @@ def history(request):
     if request.session.get('logged_in'):   
         title='this is history'
         carts = Cart.objects.filter(User_em=request.session['email']).filter(isCheckout=True).order_by('dt').reverse()
-        # ols=[]
-        # for c in carts : 
-        #     ol=Order_Line.objects.filter(CartId=c)
-        #     ols.append((c,ol))
-        # ols.reverse()
         return render(request, 'history.html', {'title':title,'carts':carts})
     else:
         return render(request, 'home.html')
@@ -413,6 +419,7 @@ def Admincat(request):
     for c in Categories:
         c.isAvtive=c.product_set.count()>0
         c.save()
+    Categories = Categories.order_by('isAvtive').reverse()
     return render(request, 'AdminControl/Admincat.html', {'all_items': Categories})
 
 

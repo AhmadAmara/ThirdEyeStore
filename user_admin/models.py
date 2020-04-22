@@ -53,7 +53,7 @@ class Cart(models.Model):
 class Order_Line(models.Model):
     CartId = models.ForeignKey(Cart,default=1,on_delete=models.CASCADE)
     ProductID = models.ForeignKey(Product,default=1,on_delete=models.CASCADE)
-    price = models.FloatField()
+    price = models.FloatField() # to_delete
     Quantity = models.IntegerField(default=1)
     
     def __str__(self):
