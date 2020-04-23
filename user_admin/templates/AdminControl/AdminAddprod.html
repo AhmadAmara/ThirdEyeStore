@@ -6,7 +6,7 @@
    <body>
 <style>
 td {
-	width:25%;
+	width:20%;
 	text-align: center;
 }
 </style>
@@ -21,12 +21,11 @@ td {
        <th>category</th>
        <th>Weight</th>
        <th>price</th>
-       <th>Quantity</th>
-         <th>Image</th>
+       <th>Image</th>
 
        <tr>
 	   <td>
-      <input class="form-control mr-sm-2" type="search"  aria-label="Search" name="Name">
+      <input class="form-control mr-sm-2"  name="Name">
       </td>
       <td>
        <select name="category" >
@@ -38,18 +37,17 @@ td {
 
       </td>
       <td>
-      <input class="form-control mr-sm-2" type="search" aria-label="Search" name="Weight">
+      <input class="form-control mr-sm-2"   name="Weight">
       </td>
       <td>
-      <input class="form-control mr-sm-2" type="search"  aria-label="Search" name="price">
-      </td>
-      <td>
-      <input class="form-control mr-sm-2" type="search"  aria-label="Search" name="Quantity">
+      <input class="form-control mr-sm-2"   name="price">
       </td>
          <td>
         <input type="file" id="Image"  name="Image" accept="image/*">
+        <input hidden id="is_active"  name="is_active" value="True">
         
       </td>   
+      
     </tr>
       </table>
       <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Add product</button>
@@ -61,6 +59,4 @@ td {
 </html>
 {% endblock %}
 
-<!--  <input class="form-control mr-sm-2" type="search" placeholder="{{ product.category.catName }}" 
-      value="{{ product.category.catName }}" aria-label="Search" name="category">
-      -->
+

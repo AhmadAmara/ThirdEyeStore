@@ -28,12 +28,15 @@ class Product(models.Model):
     Name= models.CharField(max_length=200,unique=True)
     Weight = models.FloatField()
     price = models.FloatField()
-    Quantity = models.IntegerField(default=0)
+    # sold_amount = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
     Image=models.ImageField(upload_to='Products',default='Products/product-icon-png-2.png') 
+
+    class Meta:
+        ordering = ['Name']
     
     def __str__(self):
-        return self.Name +' | ' +str(self.category)
-        + ' | ' +str(self.price) + ' | ' +str(self.Quantity) +' | ' + str(self.Weight)
+        return self.Name +' | ' +str(self.category) + ' | ' +str(self.price) +' | is active : ' +str(self.is_active) +' | ' + str(self.Weight)
 
 
 
@@ -54,11 +57,10 @@ class Cart(models.Model):
 class Order_Line(models.Model):
     CartId = models.ForeignKey(Cart,default=1,on_delete=models.CASCADE)
     ProductID = models.ForeignKey(Product,default=1,on_delete=models.CASCADE)
-    price = models.FloatField()
     Quantity = models.IntegerField(default=1)
     
     def __str__(self):
-        return str(self.CartId) +' | ' +str(self.ProductID) + ' | ' +str(self.price) + ' | ' +str(self.Quantity) 
+        return str(self.CartId) +' | ' +str(self.ProductID) +  ' | ' +str(self.Quantity) 
 
 
 ###################################### Sales And Discounts #######################################################

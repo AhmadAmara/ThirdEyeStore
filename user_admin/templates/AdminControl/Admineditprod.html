@@ -5,10 +5,10 @@
 
    <body>
 <style>
-td {
-	width:25%;
+td , th {
 	text-align: center;
-}
+} 
+
 </style>
 <center><h1>This is Admin Edit Product</h1></center>
 
@@ -17,19 +17,20 @@ td {
       {% csrf_token %}
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
-       <th>Name</th>
-       <th>category</th>
-       <th>Weight</th>
-       <th>price</th>
-       <th>Quantity</th>
-       <th>Image</th>
+       <th >Name</th>
+       <th >Category</th>
+       <th >Weight</th>
+       <th >Price</th>
+       <th >Active?</th>
+       <th >Image</th>
   
        <tr>
-	   <td>
+	   <td >
       <input class="form-control mr-sm-2" type="search" placeholder="{{ product.Name }}" 
       value="{{ product.Name }}" aria-label="Search" name="Name">
       </td>
-      <td>
+
+      <td >
        <select name="category" >
        <option value={{ product.category.id }} selected>{{ product.category.catName }}</option>
 
@@ -40,22 +41,28 @@ td {
        {% endfor %}
        </select>
       </td>
-       <td>
-      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.Weight }}" 
+
+       <td >
+      <input class="form-control mr-sm-2" placeholder="{{ product.Weight }}" 
       value="{{ product.Weight }}" aria-label="Search" name="Weight">
       </td>
-       <td>
-      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.price }}" 
-      value="{{ product.price }}" aria-label="Search" name="price">
+
+       <td >
+        <input class="form-control mr-sm-2" placeholder="{{ product.price }}" 
+        value="{{ product.price }}" aria-label="Search" name="price">
       </td>
-       <td>
-      <input class="form-control mr-sm-2" type="search" placeholder="{{ product.Quantity }}" 
-      value="{{ product.Quantity }}" aria-label="Search" name="Quantity">
+
+       <td >
+           {% if product.is_active %}
+            <input  type="checkbox" id="is_active" name="is_active" value="is_active" checked> 
+            {%else%}
+            <input  type="checkbox" id="is_active" name="is_active" value="is_active" >
+            {% endif %}
+          <label for="isAvtive">Yes/No</label>
       </td>
-            <td>
-        <img src="{{ product.Image.url }}" width="50" height="50">
-        <input type="file" id="Image"  name="Image" accept="image/*">
-        
+       <td >
+        <img  src="{{ product.Image.url }}" width="50" height="50">
+        <input  type="file" id="Image"  name="Image" accept="image/*">
       </td>
     </tr>
       </table>
@@ -68,7 +75,3 @@ td {
    </body>
 </html>
 {% endblock %}
-
-<!--  <input class="form-control mr-sm-2" type="search" placeholder="{{ product.category.catName }}" 
-      value="{{ product.category.catName }}" aria-label="Search" name="category">
-      -->

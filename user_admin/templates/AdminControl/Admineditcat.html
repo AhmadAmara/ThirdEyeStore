@@ -30,11 +30,10 @@ td {
 
       <div>
            {% if category.isAvtive %}
-            <input disabled type="checkbox" id="isAvtive" name="isAvtive" value="isAvtive" checked>
+            <b style='color:limegreen'>YES<b>
             {%else%}
-            <input disabled type="checkbox" id="isAvtive" name="isAvtive" value="isAvtive" >
+            <b style='color:red'>NO<b>
             {% endif %}
-          <label for="isAvtive"> is Active?</label>
        </div>
 
       </td>

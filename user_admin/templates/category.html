@@ -27,7 +27,7 @@ img {
     margin: 5px;
 }
 
-h3, h5 {
+h4,h5,h6{
     margin: 19px 5px;
 }
 
@@ -41,18 +41,16 @@ section button {
     margin: 5px;
 }
 
-form {
-    width: 90%;
-    margin: 20px auto;
-}
 
 .discountp{
 	display: inline;
 }
 
+
 	</style>
 </head>
-
+ 
+<body class="cate">
 {% if products_dict %}
 <h1>This is {{category.catName}}</h1>
 
@@ -68,37 +66,39 @@ form {
 {% endif %}
 		{% for product, percent_final in products_dict.items %}
 			<section>
-			  <!-- <a class="nav-link" href="{% url  'ShowProduct' category_id product.id  %}">
-					  <img src="{{ product.Image.url }}" >
-					  <br>
-					 </a>
-					 -->
                 	  <img src="{{ product.Image.url }}" >
 
-					<h3><i>{{product.Name}}</i></h3>
-					<h5>{{product.Weight}} g</h5>
+					<h4><i>{{product.Name}}</i></h4>
+					<h6>{{product.Weight}} kg</h6>
 					
 					{%if percent_final.0 != 'No Discount'%}
-						<h5 class="discountp"><del>{{product.price}}</del></h5>
-						<h5 class="discountp">{{percent_final.1}}&#8362;</h5>
+						<h5 class="discountp" style="color:grey"><del>{{product.price}}&#8362;</del></h5>
+						<h5 class="discountp">{{percent_final.1}}&#8362;</h5><br>
+						<h6 style="background:pink; color:red" class="discountp">{{percent_final.0}}%</h6>
 					{%else%}
-						<h5>{{product.price}}&#8362;</h5>
+						<h5 class="discountp">{{product.price}}&#8362;</h5>
+						<br><br>
 					{% endif %}
-					{%if product.Quantity%}
+					{%if product.is_active%}
 					<form name="buyform"
 					   action = "{% url 'addorder' product.id %}" 
                        method = "POST">
 					   {% csrf_token %}
-                	<input type="submit" value="Add to Cart" >
+                	<button type="submit">Add to Cart</button>
                     </form>
 					
-					{%else%} <button type="button" disabled>Currently Unavailable</button>
+					{%else%} 					<form name="buyform"
+					   action = "{% url 'addorder' product.id %}" 
+                       method = "POST">
+					   {% csrf_token %}
+                	<button disabled >Currently Unavailable</button>
+                    </form>
 					{% endif %}
-					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</section>
 			
 		{% endfor %}
 {% endif %}
+</body>
 {% endblock content %}
 

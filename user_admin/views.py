@@ -122,14 +122,9 @@ def category(request,category_id):
     'all_items': Products, 'products_dict': products_dict})
 
 
-def ShowProduct(request,category_id,product_id):
-    product = Product.objects.get(pk=product_id)
-    return render(request, "product.html",{'product':product,'category_id': category_id})
-
-
-
-
-
+# def ShowProduct(request,category_id,product_id):
+#     product = Product.objects.get(pk=product_id)
+#     return render(request, "product.html",{'product':product,'category_id': category_id})
 
 
 
@@ -138,9 +133,11 @@ def signout(request):
         del request.session['logged_in']
         del request.session['email']
         del request.session['typ']
+        del request.session['name']
     except KeyError:
         pass
     return render(request, "home.html")
+
 
 def addorder(request,Product_id):
     if request.session.get('logged_in'):
@@ -154,16 +151,15 @@ def addorder(request,Product_id):
             cartid=Cart()
             cartid.User_em=User.objects.get(pk=email)
             cartid.save()
-        ol=Order_Line.objects.filter(CartId=cartid).filter(ProductID=product)
-        if (ol):
+        try:
             ol=Order_Line.objects.filter(CartId=cartid).get(ProductID=product)
             ol.Quantity=ol.Quantity+1
             ol.save()
-        else :
+        except :
             new_order=Order_Line()
             new_order.CartId=cartid
             new_order.ProductID=product
-            new_order.price=product.price
+            new_order.price=product.price # to_delete
             new_order.save()
 
         messages.success(request, (product.Name+" Has Been Added To A Cart!"))
@@ -201,16 +197,11 @@ def cart(request):
 
         pro_dis = [(o.ProductID.productanddiscountmembership_set.all()) for o in ord_lin]
         max_discount=[max([p.product_discount.discount_percent for p in pd]+[0]) for pd in pro_dis]
-        price_after=[(o.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
-        all_items=list([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
+        price_after=[(o.ProductID.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
+        all_items=([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
         totalprice=0
-        ol_price=0
-        cart_info=''
-        for pa,ol,md in zip(price_after,ord_lin,max_discount):
-            ol_price = ol.Quantity * pa
-            totalprice += ol_price
-            cart_info += (f"{ol.ProductID.Name} >>> ({str(ol.ProductID.price)} * {str(100-md)}% = {str(pa)}) * {str(ol.Quantity)} = {ol_price}\n")
-        cartid.cart_orderlines = cart_info
+        for pa,ol in zip(price_after,ord_lin):
+            totalprice = ol.Quantity * pa
         cartid.total_price=totalprice
         cartid.save()
 
@@ -221,22 +212,38 @@ def cart(request):
 def buy(request):
     
     if request.session.get('logged_in'):
-        
+    
         email = request.session['email']
         old_cart = Cart.objects.filter(User_em=email).get(isCheckout=False)
         ord_lin = Order_Line.objects.filter(CartId=old_cart)
+        if(ord_lin):
+            pro_dis = [(o.ProductID.productanddiscountmembership_set.all()) for o in ord_lin]
+            max_discount=[max([p.product_discount.discount_percent for p in pd]+[0]) for pd in pro_dis]
+            price_after=[(o.ProductID.price*(100-m)/100) for o,m in zip(ord_lin,max_discount)]
+            all_items=list([(ol,md ,pa) for ol,md,pa in zip(ord_lin,max_discount,price_after)])
+            totalprice=0
+            ol_price=0
+            cart_info=''
+            for pa,ol,md in zip(price_after,ord_lin,max_discount):
+                ol_price = ol.Quantity * pa
+                totalprice += ol_price
+                cart_info += (f"{ol.ProductID.Name} >>> ({str(ol.ProductID.price)} * {str(100-md)}% = {str(pa)}) * {str(ol.Quantity)} = {ol_price}\n")
+            old_cart.cart_orderlines = cart_info
+            old_cart.total_price=totalprice
+            old_cart.save()
 
-        old_cart.isCheckout=True
-        old_cart.dt = datetime.datetime.now()
-        old_cart.save()
+
+            old_cart.isCheckout=True
+            old_cart.dt = datetime.datetime.now()
+            old_cart.save()
         
 
 
-        new_cart=Cart()
-        new_cart.User_em=User.objects.get(pk=email)
-        new_cart.save()
-
-        return redirect('../cart/')
+            new_cart=Cart()
+            new_cart.User_em=User.objects.get(pk=email)
+            new_cart.save()
+        messages.success(request, ("Thank you for buying"))
+        return redirect('../history/')
     else:
         return render(request, 'home.html')
 
@@ -265,11 +272,6 @@ def history(request):
     if request.session.get('logged_in'):   
         title='this is history'
         carts = Cart.objects.filter(User_em=request.session['email']).filter(isCheckout=True).order_by('dt').reverse()
-        # ols=[]
-        # for c in carts : 
-        #     ol=Order_Line.objects.filter(CartId=c)
-        #     ols.append((c,ol))
-        # ols.reverse()
         return render(request, 'history.html', {'title':title,'carts':carts})
     else:
         return render(request, 'home.html')
@@ -284,12 +286,10 @@ def ControlPanel(request):
         return redirect('login')
 
 
-
-
-
 def Adminprod(request):
     all_items=Product.objects.all()
     return render(request, 'AdminControl/Adminprod.html', {'all_items': all_items})
+
 
 def adminEditP(request,products_ID):
     if request.method == 'POST':  
@@ -297,11 +297,6 @@ def adminEditP(request,products_ID):
         form = ProductForm(request.POST or None, instance=product)
         if form.is_valid():
             form.save()
-            cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-            ord_lin = Order_Line.objects.filter(CartId=cartid)
-            for order in ord_lin :
-                order.price=form['price'].value()
-                order.save()
             messages.success(request, (product.Name+' Has Been Edited!'))
             return redirect('.')
         else:
@@ -314,52 +309,37 @@ def adminEditP(request,products_ID):
 
 
 
-def adminaddP(request):
-    if request.method == 'POST':
-        product=Product()
-        form = ProductForm(request.POST or None,request.FILES, instance=product)
-        if form.is_valid():
-            form.save()
-            messages.success(request, (product.Name+' Has Been Added!'))
-            return redirect('..')
-        else:
-            product.delete()
-            print(form.errors.as_data())
-            return redirect('..')
-    else:
-        Categories = Category.objects.values('catName')
-        form=ProductForm()
-        return render(request, 'AdminControl/AdminAddprod.html', {'form':form,'Categories':Categories})
+# def adminaddP(request):
+#     if request.method == 'POST':
+#         product=Product()
+#         form = ProductForm(request.POST or None,request.FILES, instance=product)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, (product.Name+' Has Been Added!'))
+#             return redirect('..')
+#         else:
+#             product.delete()
+#             print(form.errors.as_data())
+#             return redirect('..')
+#     else:
+#         Categories = Category.objects.values('catName')
+#         form=ProductForm()
+#         return render(request, 'AdminControl/AdminAddprod.html', {'form':form,'Categories':Categories})
 
 
 def adminDeletP(request,products_ID):
     product = Product.objects.get(pk=products_ID)
     product.delete()
-    try:
-       cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-       ord_lin = Order_Line.objects.filter(CartId=cartid)
-       for order in ord_lin :
-           if order.ProductID.id==products_ID:
-              del order
-    except:
-        print("no cart")
     messages.success(request, (product.Name+' Has Been Deleted!'))
     return  redirect('..')
 
 def adminEditP(request,products_ID):
     if request.method == 'POST':  
+
         product = Product.objects.get(pk=products_ID)
         form = ProductForm(request.POST or None,request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            try:
-               cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-               ord_lin = Order_Line.objects.filter(CartId=cartid)
-               for order in ord_lin :
-                   order.price=form['price'].value()
-                   order.save()
-            except:
-                print("no cart")
             messages.success(request, (product.Name+' Has Been Edited!'))
             return redirect('.')
         else:
@@ -367,7 +347,7 @@ def adminEditP(request,products_ID):
             return render(request, 'AdminControl/Adminprod.html')
     else:
         product = Product.objects.get(pk=products_ID)
-        Categories = Category.objects.values('catName')
+        Categories = Category.objects.all() #have been changed
         return render(request, 'AdminControl/Admineditprod.html', {'product': product,'Categories':Categories})
 
 
@@ -378,14 +358,14 @@ def adminaddP(request):
         form = ProductForm(request.POST or None,request.FILES, instance=product)
         # print("Iam request.POST",request.POST)
         if form.is_valid():
+    
             form.save()
             img=form['Image'].value()
-            print('kokokoko')
-            print("Iam img",img)
             messages.success(request, (product.Name+' Has Been Added!'))
-            return redirect('..')
+            return redirect('..') #have been changed
         else:
             #product.delete()
+            messages.success(request, (product.Name+' is already exists!'))
             print(form.errors.as_data())
             return redirect('..')
     else:
@@ -397,14 +377,6 @@ def adminaddP(request):
 def adminDeletP(request,products_ID):
     product = Product.objects.get(pk=products_ID)
     product.delete()
-    try:
-       cartid = Cart.objects.filter(User_em=request.session['email']).get(isCheckout=False)
-       ord_lin = Order_Line.objects.filter(CartId=cartid)
-       for order in ord_lin :
-           if order.ProductID.id==products_ID:
-              del order
-    except:
-        print("no cart")
     messages.success(request, (product.Name+' Has Been Deleted!'))
     return  redirect('..')
 
@@ -415,6 +387,7 @@ def Admincat(request):
     for c in Categories:
         c.isAvtive=c.product_set.count()>0
         c.save()
+    Categories = Categories.order_by('isAvtive').reverse()
     return render(request, 'AdminControl/Admincat.html', {'all_items': Categories})
 
 
@@ -571,8 +544,9 @@ def updateDiscountProducts(request, discount_id):
 
 def deleteDiscountMemberShip(request, memberShip_id):
     discount_id = ProductAndDiscountMemberShip.objects.get(id=memberShip_id).product_discount.id
+    product=ProductAndDiscountMemberShip.objects.get(id=memberShip_id).product
     ProductAndDiscountMemberShip.objects.filter(id=memberShip_id).delete()
-    messages.success(request, ('the product has been deleted from this discount'))
+    messages.success(request, (product.Name + ' has been deleted from this discount'))
     return  redirect('../'+str(discount_id))
 
 def addDiscountMemberShip(request, product_id, discount_id):
@@ -582,6 +556,7 @@ def addDiscountMemberShip(request, product_id, discount_id):
         product_discount = ProductDiscount.objects.get(id=discount_id)
         discountM = ProductAndDiscountMemberShip(product=product, product_discount=product_discount)
         discountM.save()
+        messages.success(request, (product.Name + ' has been added to this discount'))
         return  redirect('../' + str(discount_id))
     else:
         discount = ProductDiscount.objects.get(id=discount_id)
