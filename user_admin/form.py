@@ -26,7 +26,7 @@ class Editqtyform(forms.Form):
 class ProductForm(forms.ModelForm):
    class Meta:
       model = Product
-      fields= ["category", "Name","Weight","price","Quantity","Image"]
+      fields= ["category", "Name","Weight","price","is_active","Image"]
 
 class CategoryForm(forms.ModelForm):
    class Meta:

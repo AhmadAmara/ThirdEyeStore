@@ -15,6 +15,7 @@
 {% if all_items %}
 <style>
 td,th {
+	min-width:14%;
 	text-align: center;
 }
 </style>
@@ -32,10 +33,10 @@ td,th {
 	<table class="table table-bordered">
 	<tr style="background:#4285F4;color:#eee;">
        <th>Name</th>
-       <th>category</th>
+       <th>Category</th>
        <th>Weight</th>
-       <th>price</th>
-       <th>Quantity</th>
+       <th>Price</th>
+       <th>Is Active ?</th>
        <th></th>
        <th></th>
 
@@ -47,7 +48,14 @@ td,th {
 					<td ><center>{{things.category.catName}}</center></td>
 					<td><center>{{things.Weight}}</center></td>
 					<td><center>{{things.price}}</center></td>
-                    <td><center>{{things.Quantity}}</center></td>
+                    <td><center>      
+					    {% if things.is_active %}
+            				<b style='color:limegreen'>YES<b>
+            			{%else%}
+            				<b style='color:red'>NO<b>
+            			{% endif %}
+					</center></td>
+					
 					<td><form name="editform"
 					   action = "{% url 'adminEditP' things.id %}"  >
 					   {% csrf_token %}
@@ -60,7 +68,6 @@ td,th {
 					   {% csrf_token %}
                 	<input type="submit" value="Delete" >
                     </form></td>
-					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</tr>
 			
@@ -75,12 +82,3 @@ td,th {
       </form></center>
 
 {% endblock content %}
-
-<!--
-						<td><form name="deleteform"
-					   action = "{% url 'adminDeletP' things.id %}" 
-                       method = "POST">
-					   {% csrf_token %}
-                	<input type="submit" value="Delete" >
-                    </form></td>	
--->

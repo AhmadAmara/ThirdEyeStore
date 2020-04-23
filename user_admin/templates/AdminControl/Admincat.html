@@ -42,14 +42,18 @@ td {
 						
 				<tr>	
 					<td ><center>{{things.catName}}</center></td>
-                    <td><center>{{things.isAvtive}}</center></td>
+                    <td><center>
+						{% if things.isAvtive %}
+            				<b style='color:limegreen'>YES<b>
+            			{%else%}
+            				<b style='color:red'>NO<b>
+            			{% endif %}
+					</center></td>
 					<td><form name="editform"
 					   action = "{% url 'adminEditcat' things.id %}"  >
 					   {% csrf_token %}
                 	   <input type="submit" value="Edit" >
 					   </form></td>
-
-					<!--<input type="submit" value="Buy"/><a href="">{{things.id }}</a></td>-->
 					
 				</tr>
 			
@@ -64,16 +68,3 @@ td {
 
 
 {% endblock content %}
-
-<!--
-
-	                    </form></td>
-						<td><form name="deleteform"
-					   action = "{% url 'adminDeletcat' things.id %}" 
-                       method = "POST">
-					   {% csrf_token %}
-                	<input type="submit" value="Delete" >
-                    </form></td>
-
-
--->
