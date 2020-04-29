@@ -46,6 +46,7 @@ def login(request):
                 return render(request, "signup.html")
             
             elif(email_value[0]['password'] != password):
+                messages.info(request, ('a password is wrong'))
                 return render(request, 'loggedin.html', {"email" : "bad user name","password":"bad password"})        
 
             else:
@@ -72,6 +73,7 @@ def signup(request):
             email_value = User.objects.filter(email=email).values()
             
             if(email_value):
+                messages.info(request, ('This email already signed up.'))
                 return render(request, "signup.html", {'email': email ,'bademail':'bademail', 'message': 'this email already signedup'})
 
             new_user = User()
@@ -84,6 +86,7 @@ def signup(request):
 
             return render(request, "loggedin.html")
         else:
+            messages.info(request, ('somthing wrong, please fill the form again'))
             return render(request, "signup.html",{'message': 'somthing wrong, please fill the form again'})        
     else:
         return render(request, "signup.html",{})

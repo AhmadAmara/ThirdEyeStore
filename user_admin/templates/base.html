@@ -15,15 +15,50 @@ WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="a
  <meta name="viewport" content="width=device-width, initial-scale=1">
 
  <title>{% block title %}ThirdEyeStore{% endblock %}</title>
- 
+ <style>
+
+
+.name{
+   padding:10px;
+   float: right;
+   color:white;
+   text-transform: capitalize;
+   border-right : 1px solid white;
+}
+
+.name:hover .popup {
+    visibility:visible;
+}
+
+
+.popup li:hover {
+    background-color: #454d54
+}
+
+
+
+.popup {
+   
+    padding: 0;
+    position: absolute;
+    min-width:100px;
+    top : 50px;
+    background: #343a40;
+    visibility:hidden;
+    text-align:center;
+}
+
+ .pagetitle{
+   color : #343a40;
+   text-transform: capitalize;
+ }
+
+ </style>
  </head>
  <body>
  
  <nav   class="navbar navbar-expand-lg navbar-dark bg-dark">
  <a class="navbar-brand" href="{% url 'home' %}">Home</a>
- <!--  <button class="navbar-toggler" type="button" data-toggle="collapse" datatarget="#navbarSupportedContent" aria-controls="navbarSupportedContent" ariaexpanded="false" aria-label="Toggle navigation">
- <span class="navbar-toggler-icon"></span>
- </button> -->
  <div style="width:40%;" class="collapse navbar-collapse" id="navbarSupportedContent">
  <ul class="navbar-nav ">
 
@@ -44,34 +79,41 @@ WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="a
 
 
  <div dir="rtl" style="width:30%;">
- <ul class="navbar-nav " >
  {%if not request.session.logged_in%}
- <li class="nav-item">
+ <ul class="navbar-nav"><li class="nav-item ">
  <a class="nav-link" href="{% url 'login' %}">Login</a>
- </li>
+ </li> </ul>
 {% else %}
+<ul class="navbar-nav">
 
- <li class="nav-item cart" >
+ <li class="nav-item " >
  <a class="nav-link fas fa-shopping-cart" style='font-size:25px;color:orange'  href="{% url 'cart' %}"></a>
  </li>
 
- <li class="nav-item">
+ <!--######################################### user #########################################-->
+<li class="nav-item name">{{request.session.name}} &#9662; 
+ <ul class=" popup" >
+
+
+ <li class="nav-item ">
  <a class="nav-link" href="{% url 'history' %}">History</a>
  </li>
    {% if request.session.typ == 'admin'%}
-     <li class="nav-item">
+     <li class="nav-item ">
      <a class="nav-link" href="{% url 'ControlPanel' %}">Control Panel</a>
      </li>
     {% endif %}
    
-    <li class="nav-item">
+    <li class="nav-item ">
  <a class="nav-link" href="{% url 'signout' %}">Signout</a>
  </li>
-
-
+ </ul>
+ </li>
+ <!--######################################### user #########################################-->
+ </ul>
 {% endif %}
 
- </ul>
+
  </div>
 
 
@@ -83,11 +125,11 @@ WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="a
 
 
 
- <div class="container" style="min-height:575px">
+ <div class="container" style="min-height:600px">
  {% block content %}
  {% endblock %}
   </div>
-  <!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
+  <!--
 {% if request.session.typ == 'admin'%}
    <tt> welcome {{request.session.name}} (admin)</tt>
 {% elif request.session.typ == 'customer'%} 
@@ -95,7 +137,8 @@ WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="a
 {% else %}
    <tt> welcome visitor</tt>
 {% endif %}
-<!--aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-->
+
+-->
         <footer style="padding:10px; background:#343a40; color:white">
             <span>AHMAD<sup>3</sup> GROUP &#174; All rights reserved</span>
         </footer>

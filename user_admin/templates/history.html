@@ -12,7 +12,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 
-<h1>{{title}}</h1>
+<h1 class="pagetitle">History</h1><hr>
 
 
 {% if messages %}
@@ -24,7 +24,7 @@
 	{% endfor%}
 {% endif %}
 
-
+{%if carts%}
 {% for i in carts %}
 
 	<table class="table table-border">
@@ -41,6 +41,8 @@
 
 	</table>
 	{% endfor %}
-
+{%else%}
+	<center><div><b>there is no history yet !!</b></div></center>
+{% endif %}
 
 {% endblock content %}

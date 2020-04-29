@@ -12,7 +12,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 
-<h1>Cart</h1>
+<h1 class="pagetitle">Cart</h1><hr>
 
 
 {% if messages %}
@@ -62,6 +62,9 @@
 				</tr>
 	</table>
 	<button onclick="confirmbuy({{total_price}})">Buy it now</button>
+{%else%}
+	<center><span style="color:red"><b>your cart is empty !!</b></span></center>
+{% endif %}
 
 <script>
 	function confirmdel(id) {
@@ -74,5 +77,5 @@
     if(c){ window.location.replace("../buy/");}
 	}
 </script>
-{% endif %}
+
 {% endblock content %}

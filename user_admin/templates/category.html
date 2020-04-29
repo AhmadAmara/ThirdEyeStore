@@ -31,11 +31,6 @@ h4,h5,h6{
     margin: 19px 5px;
 }
 
-span {
-    display: block;
-    margin: 5px;
-    font-size: 1.2em;
-}
 
 section button {
     margin: 5px;
@@ -52,7 +47,7 @@ section button {
  
 <body class="cate">
 {% if products_dict %}
-<h1>This is {{category.catName}}</h1>
+<h1 class="pagetitle">{{category.catName}}</h1><hr>
 
 {% if messages %}
 	{% for message in messages %}
@@ -87,9 +82,8 @@ section button {
                 	<button type="submit">Add to Cart</button>
                     </form>
 					
-					{%else%} 					<form name="buyform"
-					   action = "{% url 'addorder' product.id %}" 
-                       method = "POST">
+					{%else%} 					
+					<form name="buyform" action = "{% url 'addorder' product.id %}" method = "POST">
 					   {% csrf_token %}
                 	<button disabled >Currently Unavailable</button>
                     </form>

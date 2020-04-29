@@ -5,8 +5,50 @@
 
 
 {% block content %}
+<style>
+h4, p {
+    font-weight: bold;
+    font-family:serif;
+    padding-top:20px;
+    text-shadow: 0px 0px 30px #343a40;
+}
 
 
-<h1>This is the Home</h1>
+.slideshow {
+    width: 800px;
+    height:470px;
+    margin: auto;
+    position: relative;
+    border :1px solid white;
+    box-shadow: 0px 0px 30px #343a40;
+}
 
+#homeb {
+    text-align: center;
+}
+
+
+</style>
+
+<script>
+var myVar = setInterval(myTimer, 3000);
+var images=["../static/upload/Image/Categorys/1.png","../static/upload/Image/Categorys/2.png","../static/upload/Image/Categorys/3.png"]
+var counter =1;
+
+function myTimer() {
+  document.getElementById("slide-img").src = images[counter];
+  counter = (counter+1)%3
+}
+</script>
+
+
+<section id="homeb">
+    <section class="slideshow">
+        <img id="slide-img" src ="../static/upload/Image/Categorys/1.png">
+    </section>
+
+
+    <h4>" Taking pictures is savoring life intensely, every hundredth of a second. "</h4>
+    <p> - Marc Riboud</p>
+</section>
 {% endblock content %}
